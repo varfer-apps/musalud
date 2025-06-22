@@ -62,4 +62,4 @@ musalud is licensed under the GNU Affero General Public License version 3:
 
 Open Source third party licenses used by this application can be found at the following location and their notices need to be part of it when using it or distributing it:
     
-    https://github.com/varfer-apps/musalud/assets/licenses
+    https://github.com/varfer-apps/musalud/tree/main/assets/licenses

@@ -22,7 +22,7 @@ void main()
 {
   LicenseRegistry.addLicense(() async* {
     final musaludLicense = await rootBundle.loadString('assets/licenses/musalud_license.txt');
-    yield LicenseEntryWithLineBreaks(['musalud_license'], musaludLicense);
+    yield LicenseEntryWithLineBreaks(['musalud'], musaludLicense);
   });
   LicenseRegistry.addLicense(() async* {
     final flutterMapLicense = await rootBundle.loadString('assets/licenses/flutter_map_license.txt');
