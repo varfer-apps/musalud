@@ -116,7 +116,7 @@ class AppNavigation extends StatefulWidget {
 
 class _AppNavigationState extends State<AppNavigation> {
   int month = 1;
-  int year = 2024;
+  int year = 2025;
   static const int maxHealthIndexesDisplayed = 5;
 
   static const double devCot = 1.34;
@@ -314,7 +314,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   )
               ),
               Align(
-                alignment: const Alignment(0, 0.65),
+                alignment: const Alignment(0, 0.68),
                 child: ElevatedButton(
                     child: const Text('Acerca de'),
                     onPressed: ()  {
@@ -342,7 +342,7 @@ class _AppNavigationState extends State<AppNavigation> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 50.0,
+                height: 40.0,
               ),
               Column(
                   children: [
@@ -373,7 +373,7 @@ class _AppNavigationState extends State<AppNavigation> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
-                                padding: const EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
+                                padding: const EdgeInsets.only(bottom: 5, top: 0, left: 10, right: 10),
                                 child: FloatingActionButton(
                                   heroTag: 'addLocationButton',
                                   mini: true,
@@ -395,7 +395,7 @@ class _AppNavigationState extends State<AppNavigation> {
                             ),
                             if (locationController.text.isNotEmpty)
                               Padding(
-                                  padding: const EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
+                                  padding: const EdgeInsets.only(bottom: 5, top: 0, left: 10, right: 10),
                                   child: FloatingActionButton(
                                     heroTag: 'deleteLocationButton',
                                     mini: true,
@@ -427,7 +427,7 @@ class _AppNavigationState extends State<AppNavigation> {
                               ),
                             if (locationController.text.isNotEmpty)
                               Padding(
-                                  padding: const EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
+                                  padding: const EdgeInsets.only(bottom: 5, top: 0, left: 10, right: 10),
                                   child: FloatingActionButton(
                                     heroTag: 'calculateHealthIndexButton',
                                     mini: true,
@@ -442,7 +442,7 @@ class _AppNavigationState extends State<AppNavigation> {
                               ),
                             if (locationController.text.isNotEmpty)
                               Padding(
-                                  padding: const EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
+                                  padding: const EdgeInsets.only(bottom: 5, top: 0, left: 10, right: 10),
                                   child: FloatingActionButton(
                                     heroTag: 'viewHealthIndexesButton',
                                     mini: true,
@@ -460,7 +460,8 @@ class _AppNavigationState extends State<AppNavigation> {
                   ]
               ),
               SizedBox(
-                  height: 380,
+                  height: 280,
+                  width: 300,
                   child: FlutterMap(
                     options: MapOptions(
                       interactionOptions: const InteractionOptions(
@@ -468,8 +469,8 @@ class _AppNavigationState extends State<AppNavigation> {
                         flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
                       ),
                       initialCenter: const LatLng(9.630189, -84.254184), // Center the map over Costa Rica
-                      initialZoom: 7.5,
-                      minZoom: 1,
+                      initialZoom: 7,
+                      minZoom: 4,
                       maxZoom: 18,
                       keepAlive: true,
                       cameraConstraint: CameraConstraint.contain(
@@ -509,7 +510,7 @@ class _AppNavigationState extends State<AppNavigation> {
                         ],
                       ),
                       const FlutterMapZoomButtons(
-                        minZoom: 4,
+                        minZoom: 1,
                         maxZoom: 18,
                         mini: true,
                         padding: 10,
@@ -519,7 +520,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   )
               ),
               const SizedBox(
-                height: 10,
+                height: 5,
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -857,7 +858,7 @@ class _AppNavigationState extends State<AppNavigation> {
   void showToast(String message, Color color, int duration, ToastGravity toastGravity, Icon icon){
     fToast.showToast(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25.0),
           color: color,
@@ -1258,11 +1259,12 @@ class _AppNavigationState extends State<AppNavigation> {
   Future<HealthIndex?> openCalculateHealthIndexDialog() => showDialog<HealthIndex>(
     context: context,
     builder: (context) => AlertDialog(
+      insetPadding: const EdgeInsets.all(10),
       title: Text('Cálculo de Índice de Calidad y Salud de ${locationController.text} - ${getMonth(DateTime.now().month)}, ${DateTime.now().year}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
       content: Wrap(
         children: [
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1309,7 +1311,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1355,7 +1357,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1401,7 +1403,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1447,7 +1449,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1493,7 +1495,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1539,7 +1541,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1585,7 +1587,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1631,7 +1633,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1676,7 +1678,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1721,9 +1723,9 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+              padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
               child:TextField(
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   readOnly: true,
                   textAlign: TextAlign.right,
                   textAlignVertical: TextAlignVertical.center,
@@ -1766,11 +1768,12 @@ class _AppNavigationState extends State<AppNavigation> {
   Future<HealthIndex?> openViewHealthIndexDialog(HealthIndex healthIndex) => showDialog<HealthIndex>(
     context: context,
     builder: (context) => AlertDialog(
+      insetPadding: const EdgeInsets.all(10),
       title: Text('Índice de Calidad y Salud de ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
       content: Wrap(
         children: [
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1807,7 +1810,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1844,7 +1847,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1881,7 +1884,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1918,7 +1921,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1955,7 +1958,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -1992,7 +1995,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -2029,7 +2032,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -2066,7 +2069,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -2103,7 +2106,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 56,
+              height: 50,
               child: Row(
                 children: [
                   SizedBox(
@@ -2143,7 +2146,7 @@ class _AppNavigationState extends State<AppNavigation> {
             child: Padding(
                 padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                 child:TextField(
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     readOnly: true,
                     textAlign: TextAlign.right,
                     textAlignVertical: TextAlignVertical.center,
@@ -2177,6 +2180,7 @@ class _AppNavigationState extends State<AppNavigation> {
   Future openViewHealthIndexes() => showDialog(
     context: context,
     builder: (context) => AlertDialog(
+      insetPadding: const EdgeInsets.all(10),
       title: Text('Índices de Calidad y Salud de ${locationController.text}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
       content:
       SizedBox(
@@ -2192,12 +2196,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   trailing: const Icon(Icons.remove_red_eye),
                   onTap: () async { //
                     setParameters(healthIndex);//                          <-- onTap
-                    if (healthIndex.year == DateTime.now().year && healthIndex.month == DateTime.now().month) {
-                      startHealthIndexCalculation();
-                    }
-                    else {
-                      await openViewHealthIndexDialog(healthIndex);
-                    }
+                    await openViewHealthIndexDialog(healthIndex);
                   }
               );
             },
@@ -2220,6 +2219,7 @@ class _AppNavigationState extends State<AppNavigation> {
   Future<HealthIndex?> openRecommendationsDialog(HealthIndex healthIndex) => showDialog<HealthIndex>(
     context: context,
     builder: (context) => AlertDialog(
+      insetPadding: const EdgeInsets.all(10),
       title: Text('Recomendaciones para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
       content: SingleChildScrollView(
         child: Container(
