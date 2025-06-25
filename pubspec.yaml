@@ -1,5 +1,5 @@
 name: musalud
-description: "Aplicacion para estimar la calidad del suelo en cultivos de banano"
+description: "Musalud es una aplicación de uso libre que proporciona recomendaciones para mejorar la calidad del suelo en cultivos de banano(Musalud is a free use application that provides recommendations to improve soil's health in banana plantations)."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

@@ -1,6 +1,6 @@
 .. -*- mode: rst -*-
 
-`musalud`
+`Musalud`
 =======================================================
 
 Get the latest code
@@ -48,7 +48,7 @@ If you use this code in your project, please cite::
 Licensing
 ^^^^^^^^^
 
-musalud is licensed under the GNU Affero General Public License version 3:
+Musalud is licensed under the GNU Affero General Public License version 3:
 
     Copyright (c) 2025, Jose Pablo Vargas & Olger Vargas - All rights reserved.
 

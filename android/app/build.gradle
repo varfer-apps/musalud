@@ -34,7 +34,7 @@ android {
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        archivesBaseName = "musalud-${versionName}"
+        archivesBaseName = "Musalud-${versionName}"
     }
 
     signingConfigs {
@@ -57,7 +57,7 @@ android {
     }
     android.applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "musalud-${variant.versionName}.apk"
+            outputFileName = "Musalud-${variant.versionName}.apk"
         }
     }
 }
