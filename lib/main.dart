@@ -541,7 +541,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ],
               ),
               const SizedBox(
-                height: 25,
+                height: 15,
               ),
               Expanded(
                 child: AspectRatio(
@@ -1153,6 +1153,7 @@ class _AppNavigationState extends State<AppNavigation> {
         enabled: true,
         handleBuiltInTouches: false,
         touchTooltipData: LineTouchTooltipData(
+          tooltipMargin: 7,
           getTooltipColor: (LineBarSpot touchedSpot) => Colors.transparent,
           tooltipPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
@@ -1161,8 +1162,9 @@ class _AppNavigationState extends State<AppNavigation> {
                 '${lineBarSpot.y.toStringAsFixed(2)} %',
                 const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 10,
+                  fontSize: 8,
                 ),
+                textAlign: TextAlign.left
               );
             }).toList();
           },
