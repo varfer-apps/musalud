@@ -3,6 +3,7 @@
     <application
         android:label="Musalud"
         android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/app">
         <activity
             android:name=".MainActivity"
