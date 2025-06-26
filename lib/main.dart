@@ -1075,7 +1075,7 @@ class _AppNavigationState extends State<AppNavigation> {
                         spot.y > 10 ? Colors.amber :
                         Colors.red;
           return FlDotCirclePainter(
-            radius: 13,
+            radius: 7,
             color: color,
             strokeWidth: 2,
             strokeColor: color,
