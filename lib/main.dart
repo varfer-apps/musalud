@@ -347,7 +347,7 @@ class _AppNavigationState extends State<AppNavigation> {
               Column(
                   children: [
                     Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.only(bottom: 5, top: 10, left: 10, right: 10),
                         child: DropdownMenu<String>(
                           label: Text(locations.isEmpty ? "Agregue una Localidad..." : "Localidad",),
                           requestFocusOnTap: true,
@@ -355,6 +355,15 @@ class _AppNavigationState extends State<AppNavigation> {
                           enableSearch: true,
                           hintText: locations.isEmpty ? "Agregue una Localidad..." : "Seleccione una Localidad...",
                           controller: selectedLocationController,
+                          inputDecorationTheme: InputDecorationTheme(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 0),
+                              constraints: BoxConstraints.tight(const
+                              Size.fromHeight(35)),
+                              border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                           onSelected: (String? value) {
                             setState(() {
                               locationController.text = value!;
