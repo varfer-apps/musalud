@@ -1275,15 +1275,53 @@ class _AppNavigationState extends State<AppNavigation> {
       content: Wrap(
         children: [
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        child:TextField(
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            readOnly: true,
+                            textAlign: TextAlign.left,
+                            controller: TextEditingController(text: "Paramétro"),
+                            decoration:  const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
+                            )
+                        )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                      child:TextField(
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          readOnly: true,
+                          textAlign: TextAlign.right,
+                          controller: TextEditingController(text: "Calificación"),
+                          decoration:  const InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
+                          )
+                      )
+                  ),
+                  )
+                ],
+              )
+          ),
+          SizedBox(
+              height: 37,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 195,
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                         child: SpinBox(
-                          textAlign: TextAlign.center,
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 0,
                           max: 5,
                           value: ai,
@@ -1291,9 +1329,10 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
-                              hintText: 'AI',
-                              labelText: 'AI (cmol(+) L-1)',
-                              labelStyle: TextStyle(color: Colors.red)
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                            hintText: 'AI',
+                            labelText: 'AI (cmol(+) L-1)',
+                            labelStyle: TextStyle(color: Colors.red)
                           ),
                           onChanged: (value) => setState(() {
                             ai = value;
@@ -1307,12 +1346,12 @@ class _AppNavigationState extends State<AppNavigation> {
                   Padding(
                       padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scoreAiController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1322,14 +1361,15 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                         child: SpinBox(
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 0,
                           max: 8,
                           value: ph,
@@ -1337,9 +1377,10 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
-                              hintText: 'pH',
-                              labelText: 'pH',
-                              labelStyle: TextStyle(color: Colors.red)
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                            hintText: 'pH',
+                            labelText: 'pH',
+                            labelStyle: TextStyle(color: Colors.red)
                           ),
                           onChanged: (value) => setState(() {
                             ph = value;
@@ -1353,12 +1394,12 @@ class _AppNavigationState extends State<AppNavigation> {
                   Padding(
                       padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scorePhController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1368,14 +1409,15 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                         child: SpinBox(
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 0,
                           max: 2,
                           value: rsp,
@@ -1383,9 +1425,10 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
-                              hintText: 'RSP',
-                              labelText: 'RSP (MPa)',
-                              labelStyle: TextStyle(color: Colors.red)
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                            hintText: 'RSP',
+                            labelText: 'RSP (MPa)',
+                            labelStyle: TextStyle(color: Colors.red)
                           ),
                           onChanged: (value) => setState(() {
                             rsp = value;
@@ -1397,14 +1440,14 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scoreRspController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1414,14 +1457,15 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                         child: SpinBox(
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 0,
                           max: 11,
                           value: cot,
@@ -1429,9 +1473,10 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
-                              hintText: 'COT',
-                              labelText: 'COT (%)',
-                              labelStyle: TextStyle(color: Colors.red)
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                            hintText: 'COT',
+                            labelText: 'COT (%)',
+                            labelStyle: TextStyle(color: Colors.red)
                           ),
                           onChanged: (value) => setState(() {
                             cot = value;
@@ -1445,12 +1490,12 @@ class _AppNavigationState extends State<AppNavigation> {
                   Padding(
                       padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scoreCotController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1460,14 +1505,15 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                         child: SpinBox(
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 0,
                           max: 120,
                           value: cpf,
@@ -1475,9 +1521,10 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
-                              hintText: 'CPF',
-                              labelText: 'CPF (cm)',
-                              labelStyle: TextStyle(color: Colors.red)
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                            hintText: 'CPF',
+                            labelText: 'CPF (cm)',
+                            labelStyle: TextStyle(color: Colors.red)
                           ),
                           onChanged: (value) => setState(() {
                             cpf = value;
@@ -1489,14 +1536,14 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scoreCpfController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1506,14 +1553,15 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                         child: SpinBox(
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 0,
                           max: 500,
                           value: apf,
@@ -1521,9 +1569,10 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
-                              hintText: 'APF',
-                              labelText: 'APF (cm)',
-                              labelStyle: TextStyle(color: Colors.red)
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                            hintText: 'APF',
+                            labelText: 'APF (cm)',
+                            labelStyle: TextStyle(color: Colors.red)
                           ),
                           onChanged: (value) => setState(() {
                             apf = value;
@@ -1535,14 +1584,14 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scoreApfController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1552,14 +1601,15 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                         child: SpinBox(
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 4,
                           max: 12,
                           value: mpr,
@@ -1567,9 +1617,10 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
-                              hintText: 'MPR',
-                              labelText: 'MPR (Manos)',
-                              labelStyle: TextStyle(color: Colors.red)
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                            hintText: 'MPR',
+                            labelText: 'MPR (Manos)',
+                            labelStyle: TextStyle(color: Colors.red)
                           ),
                           onChanged: (value) => setState(() {
                             mpr = value;
@@ -1581,14 +1632,14 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scoreMprController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1598,14 +1649,15 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                         child: SpinBox(
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 0,
                           max: 200,
                           value: rf,
@@ -1613,9 +1665,10 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
-                              hintText: 'RF',
-                              labelText: 'RF (g planta-1)',
-                              labelStyle: TextStyle(color: Colors.red)
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                            hintText: 'RF',
+                            labelText: 'RF (g planta-1)',
+                            labelStyle: TextStyle(color: Colors.red)
                           ),
                           onChanged: (value) => setState(() {
                             rf = value;
@@ -1627,14 +1680,14 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scoreRfController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1644,14 +1697,15 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                         child: SpinBox(
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 0,
                           max: 700,
                           value: cbm,
@@ -1659,6 +1713,7 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                             hintText: 'CBM',
                             labelText: 'CBM (ug C kg^-1 suelo^-1)',
                           ),
@@ -1672,14 +1727,14 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scoreCbmController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1689,14 +1744,15 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 37,
               child: Row(
                 children: [
                   SizedBox(
                     width: 195,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 4, bottom: 0, left: 8, right: 8),
                         child: SpinBox(
+                          textStyle: const TextStyle(fontSize: 14),
                           min: 0,
                           max: 70000,
                           value: rsimilis,
@@ -1704,6 +1760,7 @@ class _AppNavigationState extends State<AppNavigation> {
                           step: 0.01,
                           acceleration: 0.01,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                             hintText: 'R.similis.',
                             labelText: 'R.similis. (indiv 100 g-1)',
                           ),
@@ -1717,14 +1774,14 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.bottom,
                           controller: scoreRsimilisController,
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
                             suffixText: '%',
                           )
                       )
@@ -1733,17 +1790,21 @@ class _AppNavigationState extends State<AppNavigation> {
                 ],
               )
           ),
-          Padding(
-              padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-              child:TextField(
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  readOnly: true,
-                  textAlign: TextAlign.right,
-                  textAlignVertical: TextAlignVertical.center,
-                  controller: overallIndexController,
-                  decoration:  const InputDecoration(
-                    prefixText: 'ÍNDICE: ',
-                    suffixText: '%',
+          SizedBox(
+            height: 35,
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
+                  child:TextField(
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.top,
+                      controller: overallIndexController,
+                      decoration:  const InputDecoration(
+                        border: InputBorder.none,
+                        prefixText: 'Índice: ',
+                        suffixText: '%',
+                      )
                   )
               )
           )
@@ -1784,7 +1845,48 @@ class _AppNavigationState extends State<AppNavigation> {
       content: Wrap(
         children: [
           SizedBox(
-              height: 50,
+              height: 36,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 180,
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        child:TextField(
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            readOnly: true,
+                            textAlign: TextAlign.left,
+                            textAlignVertical: TextAlignVertical.bottom,
+                            controller: TextEditingController(text: "Parámetro"),
+                            decoration:  const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                            )
+                        )
+                    ),
+                  ),
+                  SizedBox(
+                    width: 120,
+                    child: Padding(
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        child:TextField(
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            readOnly: true,
+                            textAlign: TextAlign.right,
+                            textAlignVertical: TextAlignVertical.bottom,
+                            controller: TextEditingController(text: "Calificación"),
+                            decoration:  const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                            )
+                        )
+                    ),
+                  )
+                ],
+              )
+          ),
+          SizedBox(
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -1792,10 +1894,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: ai.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                               hintText: 'AI',
                               labelText: 'AI (cmol(+) L-1)'
                           ),
@@ -1805,14 +1909,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scoreAiController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -1822,7 +1927,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -1830,10 +1935,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: ph.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                               hintText: 'pH',
                               labelText: 'pH'
                           ),
@@ -1843,14 +1950,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scorePhController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -1860,7 +1968,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -1868,10 +1976,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: rsp.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                             hintText: 'RSP',
                             labelText: 'RSP (MPa)',
                           ),
@@ -1881,14 +1991,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scoreRspController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -1898,7 +2009,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -1906,10 +2017,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: cot.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                               hintText: 'COT',
                               labelText: 'COT (%)'
                           ),
@@ -1919,14 +2032,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scoreCotController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -1936,7 +2050,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -1944,10 +2058,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: cpf.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                             hintText: 'CPF',
                             labelText: 'CPF (cm)',
                           ),
@@ -1957,14 +2073,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scoreCpfController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -1974,7 +2091,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -1982,10 +2099,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: apf.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                             hintText: 'APF',
                             labelText: 'APF (cm)',
                           ),
@@ -1995,14 +2114,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scoreApfController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -2012,7 +2132,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -2020,10 +2140,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: mpr.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                             hintText: 'MPR',
                             labelText: 'MPR (Manos)',
                           ),
@@ -2033,14 +2155,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scoreMprController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -2050,7 +2173,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -2058,10 +2181,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: rf.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                             hintText: 'RF',
                             labelText: 'RF (g planta-1)',
                           ),
@@ -2071,14 +2196,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scoreRfController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -2088,7 +2214,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -2096,10 +2222,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: cbm.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                             hintText: 'CBM',
                             labelText: 'CBM (ug C kg^-1 suelo^-1)',
                           ),
@@ -2109,14 +2237,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scoreCbmController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -2126,7 +2255,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 50,
+              height: 36,
               child: Row(
                 children: [
                   SizedBox(
@@ -2134,10 +2263,12 @@ class _AppNavigationState extends State<AppNavigation> {
                     child: Padding(
                         padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child: TextField(
+                          style: const TextStyle(fontSize: 14),
                           readOnly: true,
                           controller: TextEditingController(text: rsimilis.toStringAsFixed(2)),
                           textAlign: TextAlign.left,
                           decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
                             hintText: 'R.similis.',
                             labelText: 'R.similis. (indiv 100 g-1)',
                           ),
@@ -2147,14 +2278,15 @@ class _AppNavigationState extends State<AppNavigation> {
                   SizedBox(
                     width: 120,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                         child:TextField(
+                            style: const TextStyle(fontSize: 14),
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
                             controller: scoreRsimilisController,
                             decoration:  const InputDecoration(
-                              prefixText: 'Nota: ',
+                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                               suffixText: '%',
                             )
                         )
@@ -2165,16 +2297,18 @@ class _AppNavigationState extends State<AppNavigation> {
           ),
           SizedBox(
             width: 300,
+            height: 35,
             child: Padding(
-                padding: const EdgeInsets.only(top: 0, bottom: 0, left: 0, right: 0),
+                padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
                 child:TextField(
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     readOnly: true,
                     textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.center,
+                    textAlignVertical: TextAlignVertical.top,
                     controller: overallIndexController,
                     decoration:  const InputDecoration(
-                      prefixText: 'ÍNDICE: ',
+                      border: InputBorder.none,
+                      prefixText: 'Índice: ',
                       suffixText: '%',
                     )
                 )
