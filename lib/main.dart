@@ -308,13 +308,13 @@ class _AppNavigationState extends State<AppNavigation> {
                 child: null,
               ),
               const Align(
-                  alignment: Alignment(0, 0.55),
+                  alignment: Alignment(0, 0.65),
                   child: Text(
-                      'Musalud', style: TextStyle(fontSize: 50.0, color: Color(0xFF00955D), fontWeight: FontWeight.bold)
+                      'Musalud', style: TextStyle(fontSize: 45.0, color: Color(0xFF00955D), fontWeight: FontWeight.bold)
                   )
               ),
               Align(
-                alignment: const Alignment(0, 0.68),
+                alignment: const Alignment(0, 0.80),
                 child: ElevatedButton(
                     child: const Text('Acerca de'),
                     onPressed: ()  {
@@ -342,7 +342,7 @@ class _AppNavigationState extends State<AppNavigation> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 40.0,
+                height: 20.0,
               ),
               Column(
                   children: [
@@ -351,7 +351,7 @@ class _AppNavigationState extends State<AppNavigation> {
                         child: DropdownMenu<String>(
                           label: Text(locations.isEmpty ? "Agregue una Localidad..." : "Localidad",),
                           requestFocusOnTap: true,
-                          width: 500,
+                          width: 320,
                           enableSearch: true,
                           hintText: locations.isEmpty ? "Agregue una Localidad..." : "Seleccione una Localidad...",
                           controller: selectedLocationController,
@@ -375,170 +375,172 @@ class _AppNavigationState extends State<AppNavigation> {
                               DropdownMenuEntry(value: location.name??"", label: location.name??""))
                               .toList(),
                         )
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    )
+                  ]
+              ),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        height: 260,
+                        width: 260,
+                        child: FlutterMap(
+                          options: MapOptions(
+                            interactionOptions: const InteractionOptions(
+                              enableMultiFingerGestureRace: true,
+                              flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                            ),
+                            initialCenter: const LatLng(9.630189, -84.254184), // Center the map over Costa Rica
+                            initialZoom: 6.8,
+                            minZoom: 4,
+                            maxZoom: 18,
+                            keepAlive: true,
+                            cameraConstraint: CameraConstraint.contain(
+                              bounds: LatLngBounds(
+                                const LatLng(7.826057, -86.019564),
+                                const LatLng(11.350769, -82.361173),
+                              ),
+                            ),
+                            onTap: (_, p) async {
+                              latitudeController.text = p.latitude.toStringAsFixed(6);
+                              longitudeController.text = p.longitude.toStringAsFixed(6);
+                              final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
+                              if (location == null) return;
+                              setState(() {
+                                locations.add(location);
+                                lineBarsData = lineChartBarData(getSpots());
+                                widget.dataStorage.writeLocationsToCache(locations);
+                              });
+                            },
+                          ),
                           children: [
+                            TileLayer( // Display map tiles from any source
+                              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
+                              maxNativeZoom: 18, // Scale tiles when the server doesn't support higher zoom levels
+                            ),
+                            MarkerLayer(
+                                markers: locations.map((location) => getMarker(location)).toList()
+                            ),
+
+                            RichAttributionWidget( // Include a stylish prebuilt attribution widget that meets all requirements
+                              attributions: [
+                                TextSourceAttribution(
+                                  'OpenStreetMap contributors',
+                                  onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
+                                ),
+                                // Also add images...
+                              ],
+                            ),
+                            ///const FlutterMapZoomButtons(
+                            ///  minZoom: 1,
+                            ///  maxZoom: 18,
+                            ///  mini: true,
+                            ///  padding: 10,
+                            ///  alignment: Alignment.bottomRight,
+                            ///)
+                          ],
+                        )
+                    ),
+                    Column(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.only(bottom: 10, top: 10, left: 2, right: 0),
+                              child: FloatingActionButton(
+                                heroTag: 'addLocationButton',
+                                mini: true,
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.deepPurpleAccent,
+                                onPressed: () async {
+                                  latitudeController.text = "9.630189";
+                                  longitudeController.text = "-84.254184";
+                                  final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
+                                  if (location == null) return;
+                                  setState(() {
+                                    locations.add(location);
+                                    lineBarsData = lineChartBarData(getSpots());
+                                    widget.dataStorage.writeLocationsToCache(locations);
+                                  });
+                                },
+                                child: const Icon(Icons.add_box),
+                              )
+                          ),
+                          if (locationController.text.isNotEmpty)
                             Padding(
-                                padding: const EdgeInsets.only(bottom: 5, top: 0, left: 10, right: 10),
+                                padding: const EdgeInsets.only(bottom: 10, top: 10, left: 2, right: 0),
                                 child: FloatingActionButton(
-                                  heroTag: 'addLocationButton',
+                                  heroTag: 'deleteLocationButton',
                                   mini: true,
                                   foregroundColor: Colors.white,
                                   backgroundColor: Colors.deepPurpleAccent,
                                   onPressed: () async {
-                                    latitudeController.text = "9.630189";
-                                    longitudeController.text = "-84.254184";
-                                    final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
-                                    if (location == null) return;
-                                    setState(() {
-                                      locations.add(location);
-                                      lineBarsData = lineChartBarData(getSpots());
-                                      widget.dataStorage.writeLocationsToCache(locations);
-                                    });
+                                    if (await confirm(
+                                      context,
+                                      title: const Text('Confirmación'),
+                                      content: Text('Desea eliminar ${locationController.text} y toda su información, incluidos parámetros e índices de calidad y salud?'),
+                                      textOK: const Text('Sí'),
+                                      textCancel: const Text('No'),
+                                    )) {
+                                      setState(() {
+                                        String locationToRemove = locationController.text;
+                                        locations.removeAt(locations.indexWhere((location) => location.name == locationToRemove));
+                                        locationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
+                                        selectedLocationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
+                                        lineBarsData = lineChartBarData(getSpots());
+                                        widget.dataStorage.writeLocationsToCache(locations);
+                                        showToast('$locationToRemove ha sido eliminada exitosamente', Colors.red, 3, ToastGravity.TOP,
+                                            const Icon(Icons.check, color: Colors.white,));
+                                      });
+                                    }
+                                    return;
                                   },
-                                  child: const Icon(Icons.add_box),
+                                  child: const Icon(Icons.indeterminate_check_box),
                                 )
                             ),
-                            if (locationController.text.isNotEmpty)
-                              Padding(
-                                  padding: const EdgeInsets.only(bottom: 5, top: 0, left: 10, right: 10),
-                                  child: FloatingActionButton(
-                                    heroTag: 'deleteLocationButton',
-                                    mini: true,
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.deepPurpleAccent,
-                                    onPressed: () async {
-                                      if (await confirm(
-                                        context,
-                                        title: const Text('Confirmación'),
-                                        content: Text('Desea eliminar ${locationController.text} y toda su información, incluidos parámetros e índices de calidad y salud?'),
-                                        textOK: const Text('Sí'),
-                                        textCancel: const Text('No'),
-                                      )) {
-                                        setState(() {
-                                          String locationToRemove = locationController.text;
-                                          locations.removeAt(locations.indexWhere((location) => location.name == locationToRemove));
-                                          locationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
-                                          selectedLocationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
-                                          lineBarsData = lineChartBarData(getSpots());
-                                          widget.dataStorage.writeLocationsToCache(locations);
-                                          showToast('$locationToRemove ha sido eliminada exitosamente', Colors.red, 3, ToastGravity.TOP,
-                                              const Icon(Icons.check, color: Colors.white,));
-                                        });
-                                      }
-                                      return;
-                                    },
-                                    child: const Icon(Icons.indeterminate_check_box),
-                                  )
-                              ),
-                            if (locationController.text.isNotEmpty)
-                              Padding(
-                                  padding: const EdgeInsets.only(bottom: 5, top: 0, left: 10, right: 10),
-                                  child: FloatingActionButton(
-                                    heroTag: 'calculateHealthIndexButton',
-                                    mini: true,
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.deepPurpleAccent,
-                                    onPressed: () async {
-                                      setParameters(null);
-                                      startHealthIndexCalculation();
-                                    },
-                                    child: const Icon(Icons.calculate),
-                                  )
-                              ),
-                            if (locationController.text.isNotEmpty)
-                              Padding(
-                                  padding: const EdgeInsets.only(bottom: 5, top: 0, left: 10, right: 10),
-                                  child: FloatingActionButton(
-                                    heroTag: 'viewHealthIndexesButton',
-                                    mini: true,
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.deepPurpleAccent,
-                                    onPressed: () async {
-                                      await openViewHealthIndexes();
-                                    },
-                                    child: const Icon(Icons.history_toggle_off),
-                                  )
-                              )
-                          ]
-                      ),
+                          if (locationController.text.isNotEmpty)
+                            Padding(
+                                padding: const EdgeInsets.only(bottom: 10, top: 10, left: 2, right: 0),
+                                child: FloatingActionButton(
+                                  heroTag: 'calculateHealthIndexButton',
+                                  mini: true,
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.deepPurpleAccent,
+                                  onPressed: () async {
+                                    setParameters(null);
+                                    startHealthIndexCalculation();
+                                  },
+                                  child: const Icon(Icons.calculate),
+                                )
+                            ),
+                          if (locationController.text.isNotEmpty)
+                            Padding(
+                                padding: const EdgeInsets.only(bottom: 10, top: 10, left: 2, right: 0),
+                                child: FloatingActionButton(
+                                  heroTag: 'viewHealthIndexesButton',
+                                  mini: true,
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.deepPurpleAccent,
+                                  onPressed: () async {
+                                    await openViewHealthIndexes();
+                                  },
+                                  child: const Icon(Icons.history_toggle_off),
+                                )
+                            )
+                        ]
                     )
                   ]
               ),
-              SizedBox(
-                  height: 280,
-                  width: 300,
-                  child: FlutterMap(
-                    options: MapOptions(
-                      interactionOptions: const InteractionOptions(
-                        enableMultiFingerGestureRace: true,
-                        flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                      ),
-                      initialCenter: const LatLng(9.630189, -84.254184), // Center the map over Costa Rica
-                      initialZoom: 7,
-                      minZoom: 4,
-                      maxZoom: 18,
-                      keepAlive: true,
-                      cameraConstraint: CameraConstraint.contain(
-                        bounds: LatLngBounds(
-                          const LatLng(7.826057, -86.019564),
-                          const LatLng(11.350769, -82.361173),
-                        ),
-                      ),
-                      onTap: (_, p) async {
-                        latitudeController.text = p.latitude.toStringAsFixed(6);
-                        longitudeController.text = p.longitude.toStringAsFixed(6);
-                        final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
-                        if (location == null) return;
-                        setState(() {
-                          locations.add(location);
-                          lineBarsData = lineChartBarData(getSpots());
-                          widget.dataStorage.writeLocationsToCache(locations);
-                        });
-                      },
-                    ),
-                    children: [
-                      TileLayer( // Display map tiles from any source
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
-                        maxNativeZoom: 18, // Scale tiles when the server doesn't support higher zoom levels
-                      ),
-                      MarkerLayer(
-                          markers: locations.map((location) => getMarker(location)).toList()
-                      ),
-
-                      RichAttributionWidget( // Include a stylish prebuilt attribution widget that meets all requirements
-                        attributions: [
-                          TextSourceAttribution(
-                            'OpenStreetMap contributors',
-                            onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
-                          ),
-                          // Also add images...
-                        ],
-                      ),
-                      const FlutterMapZoomButtons(
-                        minZoom: 1,
-                        maxZoom: 18,
-                        mini: true,
-                        padding: 10,
-                        alignment: Alignment.bottomRight,
-                      )
-                    ],
-                  )
-              ),
-              const SizedBox(
-                height: 5,
-              ),
               Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text('Histórico de Calidad y Salud de ${locationController.text}',
+                children: [
+                  Padding(
+                  padding: const EdgeInsets.only(right: 0, left: 25, top: 0, bottom: 0),
+                    child: Text('Histórico de Calidad y Salud de ${locationController.text}',
+                      textAlign: TextAlign.left,
                       style: const TextStyle(
-                        fontSize: 15,)
+                        fontSize: 15
+                      )
+                    )
                   ),
-                ],
+                ]
               ),
               const SizedBox(
                 height: 15,
@@ -940,7 +942,7 @@ class _AppNavigationState extends State<AppNavigation> {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontSize: 12,
     );
     Widget text = const Text("");
 
@@ -968,7 +970,7 @@ class _AppNavigationState extends State<AppNavigation> {
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontSize: 12
     );
     String text;
     switch (value.toInt()) {
@@ -1301,7 +1303,7 @@ class _AppNavigationState extends State<AppNavigation> {
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           readOnly: true,
                           textAlign: TextAlign.right,
-                          controller: TextEditingController(text: "Calificación"),
+                          controller: TextEditingController(text: "Nota"),
                           decoration:  const InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
@@ -1874,7 +1876,7 @@ class _AppNavigationState extends State<AppNavigation> {
                             readOnly: true,
                             textAlign: TextAlign.right,
                             textAlignVertical: TextAlignVertical.bottom,
-                            controller: TextEditingController(text: "Calificación"),
+                            controller: TextEditingController(text: "Nota"),
                             decoration:  const InputDecoration(
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
