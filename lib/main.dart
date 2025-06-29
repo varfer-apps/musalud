@@ -158,6 +158,7 @@ class _AppNavigationState extends State<AppNavigation> {
   int currentPageIndex = 0;
   List<Location> locations = List<Location>.empty(growable: true);
 
+  late PageController pageController;
   late TextEditingController locationController;
   late TextEditingController selectedLocationController;
   late TextEditingController nameController;
@@ -196,6 +197,8 @@ class _AppNavigationState extends State<AppNavigation> {
   @override
   void initState() {
     super.initState();
+
+    pageController = PageController(initialPage: 0);
 
     locationController = TextEditingController();
     selectedLocationController = TextEditingController();
@@ -246,6 +249,7 @@ class _AppNavigationState extends State<AppNavigation> {
 
   @override
   void dispose() {
+    pageController.dispose();
     locationController.dispose();
     selectedLocationController.dispose();
     nameController.dispose();
@@ -270,33 +274,27 @@ class _AppNavigationState extends State<AppNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentPageIndex,
+        onTap: (index) {
+          pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon:  Icon(Icons.home), label: "Principal"),
+          BottomNavigationBarItem(icon: Icon(Icons.location_on_outlined), activeIcon:  Icon(Icons.location_on), label: "Mis Localidades"),
+          BottomNavigationBarItem(icon: Icon(Icons.note_alt_outlined), activeIcon:  Icon(Icons.note_alt_sharp), label: "Metodología Usada"),
+        ],
+      ),
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (int index) {
           setState(() {
             currentPageIndex = index;
           });
         },
-        indicatorColor: Colors.green,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Principal',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.location_on),
-            label: 'Mis Localidades',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.note_alt_sharp),
-            label: 'Metodología Usada',
-          ),
-        ],
-      ),
-      body: <Widget>[
-        /// Home page
-        Stack(
+        children: [
+            /// Home page
+          Stack(
             children: <Widget>[
               Container(
                 decoration: const BoxDecoration(
@@ -308,158 +306,105 @@ class _AppNavigationState extends State<AppNavigation> {
                 child: null,
               ),
               const Align(
-                  alignment: Alignment(0, 0.65),
-                  child: Text(
-                      'Musalud', style: TextStyle(fontSize: 45.0, color: Color(0xFF00955D), fontWeight: FontWeight.bold)
-                  )
+                alignment: Alignment(0, 0.65),
+                child: Text(
+                  'Musalud', style: TextStyle(fontSize: 45.0, color: Color(0xFF00955D), fontWeight: FontWeight.bold)
+                )
               ),
               Align(
                 alignment: const Alignment(0, 0.80),
                 child: ElevatedButton(
-                    child: const Text('Acerca de'),
-                    onPressed: ()  {
-                      showAboutDialog(
-                        context: context,
-                        applicationIcon: const FlutterLogo(),
-                        applicationName: 'Musalud',
-                        applicationVersion: '1.0.0',
-                        applicationLegalese: '\u{a9} ${DateTime.now().year} Jose Pablo Vargas & Olger Vargas',
-                        children: [
-                          const Text(''),
-                          const Text('Musalud es una aplicación de uso libre que proporciona recomendaciones para mejorar la calidad del suelo en cultivos de banano.'),
-                          const Text(''),
-                          const Text("(Musalud is a free use application that provides recommendations to improve soil's health in banana plantations.)"),
-                        ]
-                      );
-                    },
-                  ),
+                  child: const Text('Acerca de'),
+                  onPressed: ()  {
+                    showAboutDialog(
+                      context: context,
+                      applicationIcon: const FlutterLogo(),
+                      applicationName: 'Musalud',
+                      applicationVersion: '1.0.0',
+                      applicationLegalese: '\u{a9} ${DateTime.now().year} Jose Pablo Vargas & Olger Vargas',
+                      children: [
+                        const Text(''),
+                        const Text('Musalud es una aplicación de uso libre que proporciona recomendaciones para mejorar la calidad del suelo en cultivos de banano.'),
+                        const Text(''),
+                        const Text("(Musalud is a free use application that provides recommendations to improve soil's health in banana plantations.)"),
+                      ]
+                    );
+                  },
+                ),
               )
             ]
-        ),
+          ),
 
-        /// Locations page
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height *0.06,
-              ),
-              DropdownMenu<String>(
-                label: Text(locations.isEmpty ? "Agregue una Localidad..." : "Localidad",),
-                requestFocusOnTap: true,
-                width: MediaQuery.of(context).size.width *0.8,
-                enableSearch: true,
-                hintText: locations.isEmpty ? "Agregue una Localidad..." : "Seleccione una Localidad...",
-                controller: selectedLocationController,
-                inputDecorationTheme: InputDecorationTheme(
-                  isDense: true,
-                  contentPadding: const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 0),
-                  constraints: BoxConstraints.tight(const
-                  Size.fromHeight(35)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+          /// Locations page
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height *0.06,
                 ),
-                onSelected: (String? value) {
-                  setState(() {
-                    locationController.text = value!;
-                    lineBarsData = lineChartBarData(getSpots());
-                  });
-                },
-                dropdownMenuEntries: locations
-                  .map((location) =>
-                    DropdownMenuEntry(value: location.name??"", label: location.name??""))
-                  .toList(),
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.8,
-                width: MediaQuery.of(context).size.width * 0.8,
-                child:
-                Stack(
-                  children: [
-                    Positioned(
-                      left: 0,
-                      child:
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.8,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: FlutterMap(
-                          options: MapOptions(
-                            interactionOptions: const InteractionOptions(
-                              enableMultiFingerGestureRace: true,
-                              flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                            ),
-                            initialCenter: const LatLng(9.630189, -84.254184), // Center the map over Costa Rica
-                            initialZoom: 7.2,
-                            minZoom: 4,
-                            maxZoom: 18,
-                            keepAlive: true,
-                            cameraConstraint: CameraConstraint.contain(
-                              bounds: LatLngBounds(
-                                const LatLng(7.826057, -86.019564),
-                                const LatLng(11.350769, -82.361173),
-                              ),
-                            ),
-                            onTap: (_, p) async {
-                              latitudeController.text = p.latitude.toStringAsFixed(6);
-                              longitudeController.text = p.longitude.toStringAsFixed(6);
-                              final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
-                              if (location == null) return;
-                              setState(() {
-                                locations.add(location);
-                                lineBarsData = lineChartBarData(getSpots());
-                                widget.dataStorage.writeLocationsToCache(locations);
-                              });
-                            },
-                          ),
-                          children: [
-                            TileLayer( // Display map tiles from any source
-                              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
-                              maxNativeZoom: 18, // Scale tiles when the server doesn't support higher zoom levels
-                            ),
-                            MarkerLayer(
-                              markers: locations.map((location) => getMarker(location)).toList()
-                            ),
-
-                            RichAttributionWidget( // Include a stylish prebuilt attribution widget that meets all requirements
-                              attributions: [
-                                TextSourceAttribution(
-                                  'OpenStreetMap contributors',
-                                  onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
-                                ),
-                                // Also add images...
-                              ],
-                            ),
-                            ///const FlutterMapZoomButtons(
-                            ///  minZoom: 1,
-                            ///  maxZoom: 18,
-                            ///  mini: true,
-                            ///  padding: 10,
-                            ///  alignment: Alignment.bottomRight,
-                            ///)
-                          ],
-                        )
-                      ),
+                DropdownMenu<String>(
+                  label: Text(locations.isEmpty ? "Agregue una Localidad..." : "Localidad",),
+                  requestFocusOnTap: true,
+                  width: MediaQuery.of(context).size.width *0.8,
+                  enableSearch: true,
+                  hintText: locations.isEmpty ? "Agregue una Localidad..." : "Seleccione una Localidad...",
+                  controller: selectedLocationController,
+                  inputDecorationTheme: InputDecorationTheme(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 0),
+                    constraints: BoxConstraints.tight(const
+                    Size.fromHeight(35)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    Positioned(
-                      left: MediaQuery.of(context).size.width * 0.65,
-                      child:
-                      Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
-                            child: FloatingActionButton(
-                              heroTag: 'addLocationButton',
-                              mini: true,
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.deepPurpleAccent,
-                              onPressed: () async {
-                                latitudeController.text = "9.630189";
-                                longitudeController.text = "-84.254184";
+                  ),
+                  onSelected: (String? value) {
+                    setState(() {
+                      locationController.text = value!;
+                      lineBarsData = lineChartBarData(getSpots());
+                    });
+                  },
+                  dropdownMenuEntries: locations
+                    .map((location) =>
+                    DropdownMenuEntry(value: location.name??"", label: location.name??""))
+                      .toList(),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.8,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child:
+                  Stack(
+                    children: [
+                      Positioned(
+                        left: 0,
+                        child:
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.8,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: FlutterMap(
+                            options: MapOptions(
+                              interactionOptions: const InteractionOptions(
+                                enableMultiFingerGestureRace: true,
+                                flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                              ),
+                              initialCenter: const LatLng(9.630189, -84.254184), // Center the map over Costa Rica
+                              initialZoom: 7.2,
+                              minZoom: 4,
+                              maxZoom: 18,
+                              keepAlive: true,
+                              cameraConstraint: CameraConstraint.contain(
+                                bounds: LatLngBounds(
+                                  const LatLng(7.826057, -86.019564),
+                                  const LatLng(11.350769, -82.361173),
+                                ),
+                              ),
+                              onTap: (_, p) async {
+                                latitudeController.text = p.latitude.toStringAsFixed(6);
+                                longitudeController.text = p.longitude.toStringAsFixed(6);
                                 final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
                                 if (location == null) return;
                                 setState(() {
@@ -468,106 +413,159 @@ class _AppNavigationState extends State<AppNavigation> {
                                   widget.dataStorage.writeLocationsToCache(locations);
                                 });
                               },
-                              child: const Icon(Icons.add_location_alt_outlined),
-                            )
-                          ),
-                          if (locationController.text.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
-                            child: FloatingActionButton(
-                              heroTag: 'deleteLocationButton',
-                              mini: true,
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.deepPurpleAccent,
-                              onPressed: () async {
-                                if (await confirm(
-                                  context,
-                                  title: const Text('Confirmación'),
-                                  content: Text('Desea eliminar ${locationController.text} y toda su información, incluidos parámetros e índices de calidad y salud?'),
-                                  textOK: const Text('Sí'),
-                                  textCancel: const Text('No'),
-                                )) {
+                            ),
+                            children: [
+                              TileLayer( // Display map tiles from any source
+                                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
+                                maxNativeZoom: 18, // Scale tiles when the server doesn't support higher zoom levels
+                              ),
+                              MarkerLayer(
+                                  markers: locations.map((location) => getMarker(location)).toList()
+                              ),
+
+                              RichAttributionWidget( // Include a stylish prebuilt attribution widget that meets all requirements
+                                attributions: [
+                                  TextSourceAttribution(
+                                    'OpenStreetMap contributors',
+                                    onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
+                                  ),
+                                  // Also add images...
+                                ],
+                              ),
+                              ///const FlutterMapZoomButtons(
+                              ///  minZoom: 1,
+                              ///  maxZoom: 18,
+                              ///  mini: true,
+                              ///  padding: 10,
+                              ///  alignment: Alignment.bottomRight,
+                              ///)
+                            ],
+                          )
+                        ),
+                      ),
+                      Positioned(
+                        left: MediaQuery.of(context).size.width * 0.65,
+                        child:
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                              child: FloatingActionButton(
+                                heroTag: 'addLocationButton',
+                                mini: true,
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.deepPurpleAccent,
+                                onPressed: () async {
+                                  latitudeController.text = "9.630189";
+                                  longitudeController.text = "-84.254184";
+                                  final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
+                                  if (location == null) return;
                                   setState(() {
-                                    String locationToRemove = locationController.text;
-                                    locations.removeAt(locations.indexWhere((location) => location.name == locationToRemove));
-                                    locationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
-                                    selectedLocationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
+                                    locations.add(location);
                                     lineBarsData = lineChartBarData(getSpots());
                                     widget.dataStorage.writeLocationsToCache(locations);
-                                    showToast('$locationToRemove ha sido eliminada exitosamente', Colors.red, 3, ToastGravity.TOP,
-                                        const Icon(Icons.check, color: Colors.white,));
                                   });
-                                }
-                                return;
-                              },
-                              child: const Icon(Icons.delete_forever),
-                            )
-                          ),
-                          if (locationController.text.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
-                            child: FloatingActionButton(
-                              heroTag: 'calculateHealthIndexButton',
-                              mini: true,
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.deepPurpleAccent,
-                              onPressed: () async {
-                                setParameters(null);
-                                startHealthIndexCalculation();
-                              },
-                              child: const Icon(Icons.calculate),
-                            )
-                          ),
-                          if (locationController.text.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
-                            child: FloatingActionButton(
-                              heroTag: 'viewHealthIndexesButton',
-                              mini: true,
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.deepPurpleAccent,
-                              onPressed: () async {
-                                await openViewHealthIndexes();
-                              },
-                              child: const Icon(Icons.history_toggle_off),
-                            )
-                          )
-                        ]
+                                },
+                                child: const Icon(Icons.add_location_alt_outlined),
+                              )
+                            ),
+                            if (locationController.text.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                                child: FloatingActionButton(
+                                  heroTag: 'deleteLocationButton',
+                                  mini: true,
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.deepPurpleAccent,
+                                  onPressed: () async {
+                                    if (await confirm(
+                                      context,
+                                      title: const Text('Confirmación'),
+                                      content: Text('Desea eliminar ${locationController.text} y toda su información, incluidos parámetros e índices de calidad y salud?'),
+                                      textOK: const Text('Sí'),
+                                      textCancel: const Text('No'),
+                                    )) {
+                                      setState(() {
+                                        String locationToRemove = locationController.text;
+                                        locations.removeAt(locations.indexWhere((location) => location.name == locationToRemove));
+                                        locationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
+                                        selectedLocationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
+                                        lineBarsData = lineChartBarData(getSpots());
+                                        widget.dataStorage.writeLocationsToCache(locations);
+                                        showToast('$locationToRemove ha sido eliminada exitosamente', Colors.red, 3, ToastGravity.TOP,
+                                            const Icon(Icons.check, color: Colors.white,));
+                                      });
+                                    }
+                                    return;
+                                  },
+                                  child: const Icon(Icons.delete_forever),
+                                )
+                              ),
+                            if (locationController.text.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                                child: FloatingActionButton(
+                                  heroTag: 'calculateHealthIndexButton',
+                                  mini: true,
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.deepPurpleAccent,
+                                  onPressed: () async {
+                                    setParameters(null);
+                                    startHealthIndexCalculation();
+                                  },
+                                  child: const Icon(Icons.calculate),
+                                )
+                              ),
+                            if (locationController.text.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                                child: FloatingActionButton(
+                                  heroTag: 'viewHealthIndexesButton',
+                                  mini: true,
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.deepPurpleAccent,
+                                  onPressed: () async {
+                                    await openViewHealthIndexes();
+                                  },
+                                  child: const Icon(Icons.history_toggle_off),
+                                )
+                              )
+                          ]
+                        )
                       )
+                    ]
+                  )
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Text('Histórico de Calidad y Salud de ${locationController.text}',
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                        fontSize: 15
                     )
-                  ]
-                )
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: Text('Histórico de Calidad y Salud de ${locationController.text}',
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                    fontSize: 15
                   )
-                )
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 0, bottom: 0, right: MediaQuery.of(context).size.width *0.1, left: MediaQuery.of(context).size.width *0.1),
-                  child: AspectRatio(
-                    aspectRatio: 2,
-                    child: LineChart(
-                      linearChartData(),
-                    ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 0, bottom: 0, right: MediaQuery.of(context).size.width *0.1, left: MediaQuery.of(context).size.width *0.1),
+                    child: AspectRatio(
+                      aspectRatio: 2,
+                      child: LineChart(
+                        linearChartData(),
+                      ),
+                    )
                   )
-                )
-              ),
-            ]
-          )
-        ),
+                ),
+              ]
+            )
+          ),
 
-        /// Methodologies page
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          /// Methodologies page
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
@@ -577,7 +575,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   child: TabContainer(
                     color: Theme.of(context).colorScheme.primary,
                     tabEdge: TabEdge.left,
-                      tabExtent: MediaQuery.of(context).size.width*0.25,
+                    tabExtent: MediaQuery.of(context).size.width*0.25,
                     tabsStart: 0.1,
                     tabsEnd: 0.9,
                     childPadding: const EdgeInsets.all(20.0),
@@ -859,8 +857,9 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
               ),
             ]
-        )
-      ][currentPageIndex],
+          )
+        ]
+      )
     );
   }
 
@@ -880,10 +879,10 @@ class _AppNavigationState extends State<AppNavigation> {
               width: 12.0,
             ),
             Text(
-                message,
-                style: const TextStyle(
-                  color: Colors.white,
-                )
+              message,
+              style: const TextStyle(
+                color: Colors.white,
+              )
             ),
           ],
         ),
@@ -924,10 +923,10 @@ class _AppNavigationState extends State<AppNavigation> {
       if (location.healthIndexes!.isNotEmpty) {
         if (count != null) {
           lastHealthIndexes = location.healthIndexes!.reversed
-              .take(count)
-              .toList()
-              .reversed
-              .toList();
+            .take(count)
+            .toList()
+            .reversed
+            .toList();
         }
         else {
           lastHealthIndexes = location.healthIndexes!;
@@ -949,19 +948,19 @@ class _AppNavigationState extends State<AppNavigation> {
       int i = value.toInt();
       var healthIndex = lastHealthIndexes[i];
       text = Text(
-          '${getShortMonth(healthIndex.month??0)}\n${healthIndex.year??0}',
-          softWrap: true,
-          style: style,
-          textAlign: TextAlign.center
+        '${getShortMonth(healthIndex.month??0)}\n${healthIndex.year??0}',
+        softWrap: true,
+        style: style,
+        textAlign: TextAlign.center
       );
     }
 
     return SideTitleWidget(
-        axisSide: meta.axisSide,
-        child: SizedBox(
-          width: 30,
-          child: text,
-        )
+      axisSide: meta.axisSide,
+      child: SizedBox(
+        width: 30,
+        child: text,
+      )
     );
   }
 
@@ -1274,537 +1273,537 @@ class _AppNavigationState extends State<AppNavigation> {
       content: Wrap(
         children: [
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            readOnly: true,
-                            textAlign: TextAlign.left,
-                            controller: TextEditingController(text: "Paramétro"),
-                            decoration:  const InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
-                            )
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          controller: TextEditingController(text: "Nota"),
-                          decoration:  const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
-                          )
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      readOnly: true,
+                      textAlign: TextAlign.left,
+                      controller: TextEditingController(text: "Paramétro"),
+                      decoration:  const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
                       )
+                    )
                   ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    controller: TextEditingController(text: "Nota"),
+                    decoration:  const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 0,
-                          max: 5,
-                          value: ai,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'AI',
-                            labelText: 'AI (cmol(+) L-1)',
-                            labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            ai = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 5,
+                      value: ai,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'AI',
+                        labelText: 'AI (cmol(+) L-1)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        ai = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreAiController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreAiController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 0,
-                          max: 8,
-                          value: ph,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'pH',
-                            labelText: 'pH',
-                            labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            ph = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 8,
+                      value: ph,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'pH',
+                        labelText: 'pH',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        ph = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scorePhController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scorePhController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 0,
-                          max: 2,
-                          value: rsp,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'RSP',
-                            labelText: 'RSP (MPa)',
-                            labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            rsp = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 2,
+                      value: rsp,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'RSP',
+                        labelText: 'RSP (MPa)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        rsp = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreRspController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreRspController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 0,
-                          max: 11,
-                          value: cot,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'COT',
-                            labelText: 'COT (%)',
-                            labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            cot = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 11,
+                      value: cot,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'COT',
+                        labelText: 'COT (%)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        cot = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreCotController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreCotController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 0,
-                          max: 120,
-                          value: cpf,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'CPF',
-                            labelText: 'CPF (cm)',
-                            labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            cpf = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 120,
+                      value: cpf,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'CPF',
+                        labelText: 'CPF (cm)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        cpf = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreCpfController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreCpfController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 0,
-                          max: 500,
-                          value: apf,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'APF',
-                            labelText: 'APF (cm)',
-                            labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            apf = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 500,
+                      value: apf,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'APF',
+                        labelText: 'APF (cm)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        apf = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreApfController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreApfController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 4,
-                          max: 12,
-                          value: mpr,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'MPR',
-                            labelText: 'MPR (Manos)',
-                            labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            mpr = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 4,
+                      max: 12,
+                      value: mpr,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'MPR',
+                        labelText: 'MPR (Manos)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        mpr = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreMprController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreMprController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 0,
-                          max: 200,
-                          value: rf,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'RF',
-                            labelText: 'RF (g planta-1)',
-                            labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            rf = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 200,
+                      value: rf,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'RF',
+                        labelText: 'RF (g planta-1)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        rf = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreRfController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreRfController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 0,
-                          max: 700,
-                          value: cbm,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'CBM',
-                            labelText: 'CBM (ug C kg^-1 suelo^-1)',
-                          ),
-                          onChanged: (value) => setState(() {
-                            cbm = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 700,
+                      value: cbm,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'CBM',
+                        labelText: 'CBM (ug C kg^-1 suelo^-1)',
+                      ),
+                      onChanged: (value) => setState(() {
+                        cbm = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreCbmController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreCbmController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 0, left: 8, right: 8),
-                        child: SpinBox(
-                          textStyle: const TextStyle(fontSize: 14),
-                          min: 0,
-                          max: 70000,
-                          value: rsimilis,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'R.similis.',
-                            labelText: 'R.similis. (indiv 100 g-1)',
-                          ),
-                          onChanged: (value) => setState(() {
-                            rsimilis = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 195,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 0, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 70000,
+                      value: rsimilis,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'R.similis.',
+                        labelText: 'R.similis. (indiv 100 g-1)',
+                      ),
+                      onChanged: (value) => setState(() {
+                        rsimilis = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreRsimilisController,
-                          decoration:  const InputDecoration(
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreRsimilisController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
             height: 35,
               child: Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
-                  child:TextField(
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.top,
-                      controller: overallIndexController,
-                      decoration:  const InputDecoration(
-                        border: InputBorder.none,
-                        prefixText: 'Índice: ',
-                        suffixText: '%',
-                      )
+                padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
+                child:TextField(
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  readOnly: true,
+                  textAlign: TextAlign.right,
+                  textAlignVertical: TextAlignVertical.top,
+                  controller: overallIndexController,
+                  decoration:  const InputDecoration(
+                    border: InputBorder.none,
+                    prefixText: 'Índice: ',
+                    suffixText: '%',
                   )
+                )
               )
           )
         ],
@@ -1819,9 +1818,9 @@ class _AppNavigationState extends State<AppNavigation> {
         TextButton(
           onPressed: () {
             if (scoreAiController.text.isEmpty || scoreApfController.text.isEmpty
-                || scoreCotController.text.isEmpty || scoreCpfController.text.isEmpty
-                || scoreMprController.text.isEmpty || scoreMprController.text.isEmpty
-                || scoreRfController.text.isEmpty || scoreRspController.text.isEmpty)
+              || scoreCotController.text.isEmpty || scoreCpfController.text.isEmpty
+              || scoreMprController.text.isEmpty || scoreMprController.text.isEmpty
+              || scoreRfController.text.isEmpty || scoreRspController.text.isEmpty)
             {
               showToast("Los parámetros en rojo son obligatorios", Colors.orangeAccent, 2, ToastGravity.BOTTOM, const Icon(Icons.warning_amber, color: Colors.white,));
               return;
@@ -1844,473 +1843,473 @@ class _AppNavigationState extends State<AppNavigation> {
       content: Wrap(
         children: [
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            readOnly: true,
-                            textAlign: TextAlign.left,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: TextEditingController(text: "Parámetro"),
-                            decoration:  const InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                            )
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child:TextField(
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          readOnly: true,
+                          textAlign: TextAlign.left,
+                          textAlignVertical: TextAlignVertical.bottom,
+                          controller: TextEditingController(text: "Parámetro"),
+                          decoration:  const InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                          )
+                      )
                   ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: TextEditingController(text: "Nota"),
-                            decoration:  const InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: TextEditingController(text: "Nota"),
+                      decoration:  const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: ai.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                              hintText: 'AI',
-                              labelText: 'AI (cmol(+) L-1)'
-                          ),
-                        )
-                    ),
-                  ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scoreAiController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: ph.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                              hintText: 'pH',
-                              labelText: 'pH'
-                          ),
-                        )
-                    ),
-                  ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scorePhController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: rsp.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: ai.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
                             contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'RSP',
-                            labelText: 'RSP (MPa)',
-                          ),
-                        )
-                    ),
+                            hintText: 'AI',
+                            labelText: 'AI (cmol(+) L-1)'
+                        ),
+                      )
                   ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scoreRspController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreAiController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: cot.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                              hintText: 'COT',
-                              labelText: 'COT (%)'
-                          ),
-                        )
-                    ),
-                  ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scoreCotController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: cpf.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: ph.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
                             contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'CPF',
-                            labelText: 'CPF (cm)',
-                          ),
-                        )
-                    ),
+                            hintText: 'pH',
+                            labelText: 'pH'
+                        ),
+                      )
                   ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scoreCpfController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scorePhController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: apf.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'APF',
-                            labelText: 'APF (cm)',
-                          ),
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: rsp.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'RSP',
+                          labelText: 'RSP (MPa)',
+                        ),
+                      )
                   ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scoreApfController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreRspController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: mpr.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: cot.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
                             contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'MPR',
-                            labelText: 'MPR (Manos)',
-                          ),
-                        )
-                    ),
+                            hintText: 'COT',
+                            labelText: 'COT (%)'
+                        ),
+                      )
                   ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scoreMprController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreCotController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: rf.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'RF',
-                            labelText: 'RF (g planta-1)',
-                          ),
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: cpf.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'CPF',
+                          labelText: 'CPF (cm)',
+                        ),
+                      )
                   ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scoreRfController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreCpfController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: cbm.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'CBM',
-                            labelText: 'CBM (ug C kg^-1 suelo^-1)',
-                          ),
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: apf.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'APF',
+                          labelText: 'APF (cm)',
+                        ),
+                      )
                   ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scoreCbmController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreApfController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 35,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 170,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                        child: TextField(
-                          style: const TextStyle(fontSize: 14),
-                          readOnly: true,
-                          controller: TextEditingController(text: rsimilis.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'R.similis.',
-                            labelText: 'R.similis. (indiv 100 g-1)',
-                          ),
-                        )
-                    ),
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: mpr.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'MPR',
+                          labelText: 'MPR (Manos)',
+                        ),
+                      )
                   ),
-                  SizedBox(
-                    width: 95,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                        child:TextField(
-                            style: const TextStyle(fontSize: 14),
-                            readOnly: true,
-                            textAlign: TextAlign.right,
-                            textAlignVertical: TextAlignVertical.bottom,
-                            controller: scoreRsimilisController,
-                            decoration:  const InputDecoration(
-                              contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                              suffixText: '%',
-                            )
-                        )
-                    ),
-                  )
-                ],
-              )
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreMprController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
+          ),
+          SizedBox(
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: rf.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'RF',
+                          labelText: 'RF (g planta-1)',
+                        ),
+                      )
+                  ),
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreRfController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
+          ),
+          SizedBox(
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: cbm.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'CBM',
+                          labelText: 'CBM (ug C kg^-1 suelo^-1)',
+                        ),
+                      )
+                  ),
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreCbmController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
+          ),
+          SizedBox(
+            height: 35,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 170,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                      child: TextField(
+                        style: const TextStyle(fontSize: 14),
+                        readOnly: true,
+                        controller: TextEditingController(text: rsimilis.toStringAsFixed(2)),
+                        textAlign: TextAlign.left,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'R.similis.',
+                          labelText: 'R.similis. (indiv 100 g-1)',
+                        ),
+                      )
+                  ),
+                ),
+                SizedBox(
+                  width: 95,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreRsimilisController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                    )
+                  ),
+                )
+              ],
+            )
           ),
           SizedBox(
             width: 265,
             height: 32,
             child: Padding(
-                padding: const EdgeInsets.only(top: 2, bottom: 0, left: 14, right: 0),
-                child:TextField(
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.top,
-                    controller: overallIndexController,
-                    decoration:  const InputDecoration(
-                      border: InputBorder.none,
-                      prefixText: 'Índice: ',
-                      suffixText: '%',
-                    )
+              padding: const EdgeInsets.only(top: 2, bottom: 0, left: 14, right: 0),
+              child:TextField(
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                readOnly: true,
+                textAlign: TextAlign.right,
+                textAlignVertical: TextAlignVertical.top,
+                controller: overallIndexController,
+                decoration:  const InputDecoration(
+                  border: InputBorder.none,
+                  prefixText: 'Índice: ',
+                  suffixText: '%',
                 )
+              )
             ),
           )
         ],
@@ -2340,26 +2339,26 @@ class _AppNavigationState extends State<AppNavigation> {
       title: Text('Índices de Calidad y Salud de ${locationController.text}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
       content:
       SizedBox(
-          height: 600,
-          width: 300,
-          child: ListView.separated(
-            itemCount: locations.firstWhere((location) => location.name == locationController.text).healthIndexes!.length,
-            itemBuilder: (context, index) {
-              final healthIndex = locations.firstWhere((location) => location.name == locationController.text).healthIndexes![index];
-              return ListTile(
-                  leading: const Icon(Icons.calendar_month),
-                  title: Text('${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}'),
-                  trailing: const Icon(Icons.remove_red_eye),
-                  onTap: () async { //
-                    setParameters(healthIndex);//                          <-- onTap
-                    await openViewHealthIndexDialog(healthIndex);
-                  }
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-          )
+        height: 600,
+        width: 300,
+        child: ListView.separated(
+          itemCount: locations.firstWhere((location) => location.name == locationController.text).healthIndexes!.length,
+          itemBuilder: (context, index) {
+            final healthIndex = locations.firstWhere((location) => location.name == locationController.text).healthIndexes![index];
+            return ListTile(
+              leading: const Icon(Icons.calendar_month),
+              title: Text('${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}'),
+              trailing: const Icon(Icons.remove_red_eye),
+              onTap: () async { //
+                setParameters(healthIndex);//                          <-- onTap
+                await openViewHealthIndexDialog(healthIndex);
+              }
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Divider();
+          },
+        )
       ),
       actions: [
         TextButton(
@@ -2402,13 +2401,13 @@ class _AppNavigationState extends State<AppNavigation> {
       ),
       actions: [
         TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Align(
-                alignment: Alignment.bottomRight,
-                child: Text('CERRAR')
-            )
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Align(
+            alignment: Alignment.bottomRight,
+            child: Text('CERRAR')
+          )
         ),
       ],
     ),
@@ -2762,29 +2761,29 @@ class _AppNavigationState extends State<AppNavigation> {
     }
 
     return Marker(
-        point: LatLng(location.latitude??0, location.longitude??0),
-        width: 64,
-        height: 64,
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(text),
-                duration: const Duration(seconds: 5),
-                backgroundColor: color,
-                showCloseIcon: true,
-              ),
-            );
-            setState(() {
-              locationController.text = location.name??"";
-              selectedLocationController.text = location.name??"";
-              lineBarsData = lineChartBarData(getSpots());
-            });
-          },
-          child: Icon(Icons.location_pin, size: 35, color: color),
-        )
+      point: LatLng(location.latitude??0, location.longitude??0),
+      width: 64,
+      height: 64,
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(text),
+              duration: const Duration(seconds: 5),
+              backgroundColor: color,
+              showCloseIcon: true,
+            ),
+          );
+          setState(() {
+            locationController.text = location.name??"";
+            selectedLocationController.text = location.name??"";
+            lineBarsData = lineChartBarData(getSpots());
+          });
+        },
+        child: Icon(Icons.location_pin, size: 35, color: color),
+      )
     );
   }
 }
@@ -2806,10 +2805,10 @@ class Location {
     }
 
     return Location(
-        name: json['name'],
-        latitude: json['latitude'],
-        longitude: json['longitude'],
-        healthIndexes: hIndexes
+      name: json['name'],
+      latitude: json['latitude'],
+      longitude: json['longitude'],
+      healthIndexes: hIndexes
     );
   }
 
