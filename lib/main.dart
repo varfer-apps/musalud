@@ -866,7 +866,7 @@ class _AppNavigationState extends State<AppNavigation> {
   void showToast(String message, Color color, int duration, ToastGravity toastGravity, Icon icon){
     fToast.showToast(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25.0),
           color: color,
@@ -875,9 +875,6 @@ class _AppNavigationState extends State<AppNavigation> {
           mainAxisSize: MainAxisSize.min,
           children: [
             icon,
-            const SizedBox(
-              width: 12.0,
-            ),
             Text(
               message,
               style: const TextStyle(
@@ -2471,16 +2468,16 @@ class _AppNavigationState extends State<AppNavigation> {
         rf = hi.rf??0;
         rsimilis = hi.rsimilis??0;
 
-        scoreCotController.text = hi.scoreCot == 0 ? "" : hi.scoreCot!.toStringAsFixed(2);
-        scorePhController.text = hi.scorePh == 0 ? "" : hi.scorePh!.toStringAsFixed(2);
-        scoreAiController.text = hi.scoreAi == 0 ? "" : hi.scoreAi!.toStringAsFixed(2);
-        scoreRspController.text = hi.scoreRsp == 0 ? "" : hi.scoreRsp!.toStringAsFixed(2);
-        scoreCbmController.text = hi.scoreCbm == 0 ? "" : hi.scoreCbm!.toStringAsFixed(2);
-        scoreCpfController.text = hi.scoreCpf == 0 ? "" : hi.scoreCpf!.toStringAsFixed(2);
-        scoreApfController.text = hi.scoreApf == 0 ? "" : hi.scoreApf!.toStringAsFixed(2);
-        scoreMprController.text = hi.scoreMpr == 0 ? "" : hi.scoreMpr!.toStringAsFixed(2);
-        scoreRfController.text = hi.scoreRf == 0 ? "" : hi.scoreRf!.toStringAsFixed(2);
-        scoreRsimilisController.text = hi.scoreRsimilis == 0 ? "" : hi.scoreRsimilis!.toStringAsFixed(2);
+        scoreCotController.text = hi.cot! == 0 ? "" : hi.scoreCot!.toStringAsFixed(2);
+        scorePhController.text = hi.ph! == 0 ? "" : hi.scorePh!.toStringAsFixed(2);
+        scoreAiController.text = hi.ai! == 5 ? "" : hi.scoreAi!.toStringAsFixed(2);
+        scoreRspController.text = hi.rsp! == 2 ? "" : hi.scoreRsp!.toStringAsFixed(2);
+        scoreCbmController.text = hi.cbm! == 0 ? "" : hi.scoreCbm!.toStringAsFixed(2);
+        scoreCpfController.text = hi.cpf! == 0 ? "" : hi.scoreCpf!.toStringAsFixed(2);
+        scoreApfController.text = hi.apf! == 0 ? "" : hi.scoreApf!.toStringAsFixed(2);
+        scoreMprController.text = hi.mpr! == 0 ? "" : hi.scoreMpr!.toStringAsFixed(2);
+        scoreRfController.text = hi.rf! == 0 ? "" : hi.scoreRf!.toStringAsFixed(2);
+        scoreRsimilisController.text = hi.rsimilis! == 0 ? "" : hi.scoreRsimilis!.toStringAsFixed(2);
 
         overallIndexController.text = hi.index == 0 ? "" : hi.index!.toStringAsFixed(2);
       }
@@ -2528,7 +2525,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (cot > 0) {
       var scoreCot = double.parse((distCot.cdf(cot) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreCot;
-      scoreCotController.text = scoreCot.toString();
+      scoreCotController.text = scoreCot.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2538,13 +2535,13 @@ class _AppNavigationState extends State<AppNavigation> {
     if (ph > 0 && ph <= 5.5) {
       var scorePh = double.parse((distPh1.cdf(ph) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scorePh;
-      scorePhController.text = scorePh.toString();
+      scorePhController.text = scorePh.toStringAsFixed(2);
       parametersEntered++;
     }
     else if (ph > 5.5 && ph <= 8) {
       var scorePh = double.parse(((1 - distPh2.cdf(ph)) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scorePh;
-      scorePhController.text = scorePh.toString();
+      scorePhController.text = scorePh.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2554,7 +2551,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (ai < 5) {
       var scoreAi = double.parse(((1 - distAi.cdf(ai)) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreAi;
-      scoreAiController.text = scoreAi.toString();
+      scoreAiController.text = scoreAi.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2564,7 +2561,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (rsp < 2) {
       var scoreRsp = double.parse(((1- distRsp.cdf(rsp)) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreRsp;
-      scoreRspController.text = scoreRsp.toString();
+      scoreRspController.text = scoreRsp.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2574,7 +2571,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (cbm > 0) {
       var scoreCbm = double.parse((distCbm.cdf(cbm) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreCbm;
-      scoreCbmController.text = scoreCbm.toString();
+      scoreCbmController.text = scoreCbm.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2584,7 +2581,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (cpf > 0) {
       var scoreCpf = double.parse((distCpf.cdf(cpf) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreCpf;
-      scoreCpfController.text = scoreCpf.toString();
+      scoreCpfController.text = scoreCpf.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2594,7 +2591,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (apf > 0) {
       var scoreApf = double.parse((distApf.cdf(apf) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreApf;
-      scoreApfController.text = scoreApf.toString();
+      scoreApfController.text = scoreApf.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2604,7 +2601,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (mpr > 0) {
       var scoreMpr = double.parse((distMpr.cdf(mpr) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreMpr;
-      scoreMprController.text = scoreMpr.toString();
+      scoreMprController.text = scoreMpr.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2614,7 +2611,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (rf > 0) {
       var scoreRf = double.parse((distRf.cdf(rf) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreRf;
-      scoreRfController.text = scoreRf.toString();
+      scoreRfController.text = scoreRf.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2624,7 +2621,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (rsimilis > 0) {
       var scoreRsimilis = double.parse(((1 - distRsimilis.cdf(rsimilis)) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreRsimilis;
-      scoreRsimilisController.text = scoreRsimilis.toString();
+      scoreRsimilisController.text = scoreRsimilis.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
