@@ -338,52 +338,55 @@ class _AppNavigationState extends State<AppNavigation> {
         ),
 
         /// Locations page
-        Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Column(
             children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height *0.06,
+              ),
+              DropdownMenu<String>(
+                label: Text(locations.isEmpty ? "Agregue una Localidad..." : "Localidad",),
+                requestFocusOnTap: true,
+                width: MediaQuery.of(context).size.width *0.8,
+                enableSearch: true,
+                hintText: locations.isEmpty ? "Agregue una Localidad..." : "Seleccione una Localidad...",
+                controller: selectedLocationController,
+                inputDecorationTheme: InputDecorationTheme(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 0),
+                  constraints: BoxConstraints.tight(const
+                  Size.fromHeight(35)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onSelected: (String? value) {
+                  setState(() {
+                    locationController.text = value!;
+                    lineBarsData = lineChartBarData(getSpots());
+                  });
+                },
+                dropdownMenuEntries: locations
+                  .map((location) =>
+                    DropdownMenuEntry(value: location.name??"", label: location.name??""))
+                  .toList(),
+              ),
               const SizedBox(
-                height: 20.0,
+                height: 10.0,
               ),
-              Column(
+              SizedBox(
+                height: MediaQuery.of(context).size.width * 0.8,
+                width: MediaQuery.of(context).size.width * 0.8,
+                child:
+                Stack(
                   children: [
-                    Container(
-                        padding: const EdgeInsets.only(bottom: 5, top: 10, left: 10, right: 10),
-                        child: DropdownMenu<String>(
-                          label: Text(locations.isEmpty ? "Agregue una Localidad..." : "Localidad",),
-                          requestFocusOnTap: true,
-                          width: 320,
-                          enableSearch: true,
-                          hintText: locations.isEmpty ? "Agregue una Localidad..." : "Seleccione una Localidad...",
-                          controller: selectedLocationController,
-                          inputDecorationTheme: InputDecorationTheme(
-                              isDense: true,
-                              contentPadding: const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 0),
-                              constraints: BoxConstraints.tight(const
-                              Size.fromHeight(35)),
-                              border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          onSelected: (String? value) {
-                            setState(() {
-                              locationController.text = value!;
-                              lineBarsData = lineChartBarData(getSpots());
-                            });
-                          },
-                          dropdownMenuEntries: locations
-                              .map((location) =>
-                              DropdownMenuEntry(value: location.name??"", label: location.name??""))
-                              .toList(),
-                        )
-                    )
-                  ]
-              ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        height: 260,
-                        width: 260,
+                    Positioned(
+                      left: 0,
+                      child:
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.8,
+                        width: MediaQuery.of(context).size.width * 0.8,
                         child: FlutterMap(
                           options: MapOptions(
                             interactionOptions: const InteractionOptions(
@@ -391,7 +394,7 @@ class _AppNavigationState extends State<AppNavigation> {
                               flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
                             ),
                             initialCenter: const LatLng(9.630189, -84.254184), // Center the map over Costa Rica
-                            initialZoom: 6.8,
+                            initialZoom: 7.2,
                             minZoom: 4,
                             maxZoom: 18,
                             keepAlive: true,
@@ -419,7 +422,7 @@ class _AppNavigationState extends State<AppNavigation> {
                               maxNativeZoom: 18, // Scale tiles when the server doesn't support higher zoom levels
                             ),
                             MarkerLayer(
-                                markers: locations.map((location) => getMarker(location)).toList()
+                              markers: locations.map((location) => getMarker(location)).toList()
                             ),
 
                             RichAttributionWidget( // Include a stylish prebuilt attribution widget that meets all requirements
@@ -440,146 +443,141 @@ class _AppNavigationState extends State<AppNavigation> {
                             ///)
                           ],
                         )
+                      ),
                     ),
-                    Column(
+                    Positioned(
+                      left: MediaQuery.of(context).size.width * 0.65,
+                      child:
+                      Column(
                         children: [
                           Padding(
-                              padding: const EdgeInsets.only(bottom: 10, top: 10, left: 2, right: 0),
-                              child: FloatingActionButton(
-                                heroTag: 'addLocationButton',
-                                mini: true,
-                                foregroundColor: Colors.white,
-                                backgroundColor: Colors.deepPurpleAccent,
-                                onPressed: () async {
-                                  latitudeController.text = "9.630189";
-                                  longitudeController.text = "-84.254184";
-                                  final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
-                                  if (location == null) return;
-                                  setState(() {
-                                    locations.add(location);
-                                    lineBarsData = lineChartBarData(getSpots());
-                                    widget.dataStorage.writeLocationsToCache(locations);
-                                  });
-                                },
-                                child: const Icon(Icons.add_box),
-                              )
+                            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                            child: FloatingActionButton(
+                              heroTag: 'addLocationButton',
+                              mini: true,
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.deepPurpleAccent,
+                              onPressed: () async {
+                                latitudeController.text = "9.630189";
+                                longitudeController.text = "-84.254184";
+                                final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
+                                if (location == null) return;
+                                setState(() {
+                                  locations.add(location);
+                                  lineBarsData = lineChartBarData(getSpots());
+                                  widget.dataStorage.writeLocationsToCache(locations);
+                                });
+                              },
+                              child: const Icon(Icons.add_location_alt_outlined),
+                            )
                           ),
                           if (locationController.text.isNotEmpty)
-                            Padding(
-                                padding: const EdgeInsets.only(bottom: 10, top: 10, left: 2, right: 0),
-                                child: FloatingActionButton(
-                                  heroTag: 'deleteLocationButton',
-                                  mini: true,
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.deepPurpleAccent,
-                                  onPressed: () async {
-                                    if (await confirm(
-                                      context,
-                                      title: const Text('Confirmación'),
-                                      content: Text('Desea eliminar ${locationController.text} y toda su información, incluidos parámetros e índices de calidad y salud?'),
-                                      textOK: const Text('Sí'),
-                                      textCancel: const Text('No'),
-                                    )) {
-                                      setState(() {
-                                        String locationToRemove = locationController.text;
-                                        locations.removeAt(locations.indexWhere((location) => location.name == locationToRemove));
-                                        locationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
-                                        selectedLocationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
-                                        lineBarsData = lineChartBarData(getSpots());
-                                        widget.dataStorage.writeLocationsToCache(locations);
-                                        showToast('$locationToRemove ha sido eliminada exitosamente', Colors.red, 3, ToastGravity.TOP,
-                                            const Icon(Icons.check, color: Colors.white,));
-                                      });
-                                    }
-                                    return;
-                                  },
-                                  child: const Icon(Icons.indeterminate_check_box),
-                                )
-                            ),
-                          if (locationController.text.isNotEmpty)
-                            Padding(
-                                padding: const EdgeInsets.only(bottom: 10, top: 10, left: 2, right: 0),
-                                child: FloatingActionButton(
-                                  heroTag: 'calculateHealthIndexButton',
-                                  mini: true,
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.deepPurpleAccent,
-                                  onPressed: () async {
-                                    setParameters(null);
-                                    startHealthIndexCalculation();
-                                  },
-                                  child: const Icon(Icons.calculate),
-                                )
-                            ),
-                          if (locationController.text.isNotEmpty)
-                            Padding(
-                                padding: const EdgeInsets.only(bottom: 10, top: 10, left: 2, right: 0),
-                                child: FloatingActionButton(
-                                  heroTag: 'viewHealthIndexesButton',
-                                  mini: true,
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.deepPurpleAccent,
-                                  onPressed: () async {
-                                    await openViewHealthIndexes();
-                                  },
-                                  child: const Icon(Icons.history_toggle_off),
-                                )
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                            child: FloatingActionButton(
+                              heroTag: 'deleteLocationButton',
+                              mini: true,
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.deepPurpleAccent,
+                              onPressed: () async {
+                                if (await confirm(
+                                  context,
+                                  title: const Text('Confirmación'),
+                                  content: Text('Desea eliminar ${locationController.text} y toda su información, incluidos parámetros e índices de calidad y salud?'),
+                                  textOK: const Text('Sí'),
+                                  textCancel: const Text('No'),
+                                )) {
+                                  setState(() {
+                                    String locationToRemove = locationController.text;
+                                    locations.removeAt(locations.indexWhere((location) => location.name == locationToRemove));
+                                    locationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
+                                    selectedLocationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
+                                    lineBarsData = lineChartBarData(getSpots());
+                                    widget.dataStorage.writeLocationsToCache(locations);
+                                    showToast('$locationToRemove ha sido eliminada exitosamente', Colors.red, 3, ToastGravity.TOP,
+                                        const Icon(Icons.check, color: Colors.white,));
+                                  });
+                                }
+                                return;
+                              },
+                              child: const Icon(Icons.delete_forever),
                             )
+                          ),
+                          if (locationController.text.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                            child: FloatingActionButton(
+                              heroTag: 'calculateHealthIndexButton',
+                              mini: true,
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.deepPurpleAccent,
+                              onPressed: () async {
+                                setParameters(null);
+                                startHealthIndexCalculation();
+                              },
+                              child: const Icon(Icons.calculate),
+                            )
+                          ),
+                          if (locationController.text.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                            child: FloatingActionButton(
+                              heroTag: 'viewHealthIndexesButton',
+                              mini: true,
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.deepPurpleAccent,
+                              onPressed: () async {
+                                await openViewHealthIndexes();
+                              },
+                              child: const Icon(Icons.history_toggle_off),
+                            )
+                          )
                         ]
-                    )
-                  ]
-              ),
-              Row(
-                children: [
-                  Padding(
-                  padding: const EdgeInsets.only(right: 0, left: 25, top: 0, bottom: 0),
-                    child: Text('Histórico de Calidad y Salud de ${locationController.text}',
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                        fontSize: 15
                       )
                     )
-                  ),
-                ]
+                  ]
+                )
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: Text('Histórico de Calidad y Salud de ${locationController.text}',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    fontSize: 15
+                  )
+                )
               ),
               const SizedBox(
                 height: 15,
               ),
               Expanded(
-                child: AspectRatio(
-                  aspectRatio: 1.70,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      right: 30,
-                      left: 15,
-                      top: 5,
-                      bottom: 5,
-                    ),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 0, bottom: 0, right: MediaQuery.of(context).size.width *0.1, left: MediaQuery.of(context).size.width *0.1),
+                  child: AspectRatio(
+                    aspectRatio: 2,
                     child: LineChart(
                       linearChartData(),
                     ),
-                  ),
-                ),
+                  )
+                )
               ),
             ]
+          )
         ),
 
         /// Methodologies page
         Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 50.0,
-              ),
               SizedBox(
-                width: 400,
-                height: 500,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height*0.7,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 50, 10, 0),
                   child: TabContainer(
                     color: Theme.of(context).colorScheme.primary,
                     tabEdge: TabEdge.left,
-                      tabExtent: 100.0,
+                      tabExtent: MediaQuery.of(context).size.width*0.25,
                     tabsStart: 0.1,
                     tabsEnd: 0.9,
                     childPadding: const EdgeInsets.all(20.0),
@@ -595,13 +593,13 @@ class _AppNavigationState extends State<AppNavigation> {
                       Text('RF'),
                       Text('R.similis')
                     ],
-                    selectedTextStyle: const TextStyle(
+                    selectedTextStyle: TextStyle(
                       color: Colors.white,
-                      fontSize: 25.0,
+                      fontSize: MediaQuery.of(context).size.width * 0.05,
                     ),
-                    unselectedTextStyle: const TextStyle(
+                    unselectedTextStyle: TextStyle(
                       color: Colors.black,
-                      fontSize: 20.0,
+                      fontSize: MediaQuery.of(context).size.width * 0.04,
                     ),
                     children: <Widget>[
                       SingleChildScrollView(
@@ -614,19 +612,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Combustión seca.',
                               style: TextStyle(color: Colors.white),
@@ -644,19 +642,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'En agua.',
                               style: TextStyle(color: Colors.white),
@@ -674,19 +672,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'En KCl 1M.',
                               style: TextStyle(color: Colors.white),
@@ -704,19 +702,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Fumigación-extracción. Vance et al. (1987).',
                               style: TextStyle(color: Colors.white),
@@ -734,7 +732,7 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Superficial, humedad a capacidad de campo, utilizando un penetrómetro marca Eijkelkamp® modelo 06.01SB.',
                               style: TextStyle(color: Colors.white),
@@ -752,7 +750,7 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Planta en edad de parición. Circunferencia a 1 m de altura.',
                               style: TextStyle(color: Colors.white),
@@ -770,7 +768,7 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Hijo de planta en edad de parición. Altura del hijo de sucesión, de la base a la "v" que se forma entre la hoja candela y hoja #1.',
                               style: TextStyle(color: Colors.white),
@@ -788,7 +786,7 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Conteo de manos en frutas de 11 o 12 semanas de embolse.',
                               style: TextStyle(color: Colors.white),
@@ -806,19 +804,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Muestra tomada en un volumen de suelo de 13x13x30 cm, entre madre e hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Metodología descrita por Vargas y Araya (2018)',
                               style: TextStyle(color: Colors.white),
@@ -836,19 +834,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Muestra tomada en un volumen de suelo de 13x13x30 cm, entre madre e hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Metodología descrita por Vargas y Araya (2018)',
                               style: TextStyle(color: Colors.white),
@@ -961,7 +959,7 @@ class _AppNavigationState extends State<AppNavigation> {
     return SideTitleWidget(
         axisSide: meta.axisSide,
         child: SizedBox(
-          width: 35,
+          width: 30,
           child: text,
         )
     );
@@ -974,17 +972,14 @@ class _AppNavigationState extends State<AppNavigation> {
     );
     String text;
     switch (value.toInt()) {
-      case 0:
-        text = '0%';
+      case 10:
+        text = '10%';
         break;
-      case 25:
-        text = '25%';
+      case 35:
+        text = '35%';
         break;
-      case 50:
-        text = '50%';
-        break;
-      case 75:
-        text = '75%';
+      case 65:
+        text = '65%';
       case 100:
         text = '100%';
         break;
@@ -1147,7 +1142,7 @@ class _AppNavigationState extends State<AppNavigation> {
         show: false,
       ),
       minX: 0,
-      maxX: 4,
+      maxX: 3,
       minY: 0,
       maxY: 100,
       lineBarsData: [lineBarsData],
@@ -1196,12 +1191,14 @@ class _AppNavigationState extends State<AppNavigation> {
   Future<Location?> openAddLocationDialog(String latitude, String longitude) => showDialog<Location>(
     context: context,
     builder: (context) => AlertDialog(
+      insetPadding: const EdgeInsets.all(10),
       title: const Text("Nueva Localidad"),
       content: Column(
         children: [
           Form(
             autovalidateMode: AutovalidateMode.always,
             child: TextFormField(
+              maxLength: 35,
               autofocus: true,
               controller: nameController,
               decoration: const InputDecoration(
@@ -1277,7 +1274,7 @@ class _AppNavigationState extends State<AppNavigation> {
       content: Wrap(
         children: [
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1298,7 +1295,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           readOnly: true,
@@ -1315,7 +1312,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1346,7 +1343,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1363,7 +1360,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1394,7 +1391,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1411,7 +1408,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1442,7 +1439,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1459,7 +1456,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1490,7 +1487,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1507,7 +1504,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1538,7 +1535,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1555,7 +1552,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1586,7 +1583,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1603,7 +1600,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1634,7 +1631,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1651,7 +1648,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1682,7 +1679,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1699,7 +1696,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1729,7 +1726,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1746,7 +1743,7 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 37,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
@@ -1776,7 +1773,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                   Expanded(child:
                   Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
+                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
                       child:TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1843,17 +1840,17 @@ class _AppNavigationState extends State<AppNavigation> {
     context: context,
     builder: (context) => AlertDialog(
       insetPadding: const EdgeInsets.all(10),
-      title: Text('Índice de Calidad y Salud de ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+      title: Text('Índice de Calidad y Salud de ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
       content: Wrap(
         children: [
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child:TextField(
                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             readOnly: true,
@@ -1868,9 +1865,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             readOnly: true,
@@ -1888,13 +1885,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1909,9 +1906,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -1929,13 +1926,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1950,9 +1947,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -1970,13 +1967,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -1991,9 +1988,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -2011,13 +2008,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -2032,9 +2029,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -2052,13 +2049,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -2073,9 +2070,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -2093,13 +2090,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -2114,9 +2111,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -2134,13 +2131,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -2155,9 +2152,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -2175,13 +2172,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -2196,9 +2193,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -2216,13 +2213,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -2237,9 +2234,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -2257,13 +2254,13 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-              height: 36,
+              height: 35,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 180,
+                    width: 170,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                         child: TextField(
                           style: const TextStyle(fontSize: 14),
                           readOnly: true,
@@ -2278,9 +2275,9 @@ class _AppNavigationState extends State<AppNavigation> {
                     ),
                   ),
                   SizedBox(
-                    width: 120,
+                    width: 95,
                     child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                         child:TextField(
                             style: const TextStyle(fontSize: 14),
                             readOnly: true,
@@ -2298,10 +2295,10 @@ class _AppNavigationState extends State<AppNavigation> {
               )
           ),
           SizedBox(
-            width: 300,
-            height: 35,
+            width: 265,
+            height: 32,
             child: Padding(
-                padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
+                padding: const EdgeInsets.only(top: 2, bottom: 0, left: 14, right: 0),
                 child:TextField(
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     readOnly: true,
@@ -2318,6 +2315,7 @@ class _AppNavigationState extends State<AppNavigation> {
           )
         ],
       ),
+      actionsAlignment: MainAxisAlignment.start,
       actions: [
         TextButton(
           onPressed: () async {
@@ -2339,7 +2337,7 @@ class _AppNavigationState extends State<AppNavigation> {
     context: context,
     builder: (context) => AlertDialog(
       insetPadding: const EdgeInsets.all(10),
-      title: Text('Índices de Calidad y Salud de ${locationController.text}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+      title: Text('Índices de Calidad y Salud de ${locationController.text}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
       content:
       SizedBox(
           height: 600,
@@ -2378,7 +2376,7 @@ class _AppNavigationState extends State<AppNavigation> {
     context: context,
     builder: (context) => AlertDialog(
       insetPadding: const EdgeInsets.all(10),
-      title: Text('Recomendaciones para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+      title: Text('Recomendaciones para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
       content: SingleChildScrollView(
         child: Container(
           height: 1400,
