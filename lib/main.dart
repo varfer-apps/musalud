@@ -1099,7 +1099,7 @@ class _AppNavigationState extends State<AppNavigation> {
       }
     }
     return LineChartData(
-      showingTooltipIndicators: healthIndexes.take(5).toList().asMap().keys
+      showingTooltipIndicators: healthIndexes.take(4).toList().asMap().keys
           .map((index) {
         return ShowingTooltipIndicators([
           LineBarSpot(
