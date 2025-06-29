@@ -2373,26 +2373,29 @@ class _AppNavigationState extends State<AppNavigation> {
     builder: (context) => AlertDialog(
       insetPadding: const EdgeInsets.all(10),
       title: Text('Recomendaciones para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-      content: SingleChildScrollView(
-        child: Container(
-          height: 1400,
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              BulletedList(
-                listItems: getUrgentRecommendations(healthIndex),
-                bullet: const Icon(Icons.warning, color: Colors.red),
-              ),
-              BulletedList(
-                listItems: getWarningRecommendations(healthIndex),
-                bullet: const Icon(Icons.warning_amber, color: Colors.yellow),
-              ),
-              BulletedList(
-                listItems: getGoodRecommendations(healthIndex),
-                bullet: const Icon(Icons.check, color: Colors.green),
-              ),
-            ],
+      content: Scrollbar(
+        interactive: true,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                BulletedList(
+                  listItems: getUrgentRecommendations(healthIndex),
+                  bullet: const Icon(Icons.warning, color: Colors.red),
+                ),
+                BulletedList(
+                  listItems: getWarningRecommendations(healthIndex),
+                  bullet: const Icon(Icons.warning_amber, color: Colors.yellow),
+                ),
+                BulletedList(
+                  listItems: getGoodRecommendations(healthIndex),
+                  bullet: const Icon(Icons.check, color: Colors.green),
+                ),
+              ],
+            ),
           ),
         ),
       ),
