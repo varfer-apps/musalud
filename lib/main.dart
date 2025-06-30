@@ -1880,416 +1880,16 @@ class _AppNavigationState extends State<AppNavigation> {
               ],
             )
           ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: ai.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'AI',
-                            labelText: 'AI (cmol(+) L-1)'
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scoreAiController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: ph.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'pH',
-                            labelText: 'pH'
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scorePhController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: rsp.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                          hintText: 'RSP',
-                          labelText: 'RSP (MPa)',
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scoreRspController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: cot.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                            hintText: 'COT',
-                            labelText: 'COT (%)'
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scoreCotController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: cpf.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                          hintText: 'CPF',
-                          labelText: 'CPF (cm)',
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scoreCpfController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: apf.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                          hintText: 'APF',
-                          labelText: 'APF (cm)',
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scoreApfController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: mpr.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                          hintText: 'MPR',
-                          labelText: 'MPR (Manos)',
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scoreMprController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: rf.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                          hintText: 'RF',
-                          labelText: 'RF (g planta-1)',
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scoreRfController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: cbm.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                          hintText: 'CBM',
-                          labelText: 'CBM (ug C kg^-1 suelo^-1)',
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scoreCbmController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: 35,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 170,
-                  child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child: TextField(
-                        style: const TextStyle(fontSize: 14),
-                        readOnly: true,
-                        controller: TextEditingController(text: rsimilis.toStringAsFixed(2)),
-                        textAlign: TextAlign.left,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                          hintText: 'R.similis.',
-                          labelText: 'R.similis. (indiv 100 g-1)',
-                        ),
-                      )
-                  ),
-                ),
-                SizedBox(
-                  width: 95,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
-                    child:TextField(
-                      style: const TextStyle(fontSize: 14),
-                      readOnly: true,
-                      textAlign: TextAlign.right,
-                      textAlignVertical: TextAlignVertical.bottom,
-                      controller: scoreRsimilisController,
-                      decoration:  const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                        suffixText: '%',
-                      )
-                    )
-                  ),
-                )
-              ],
-            )
-          ),
+          viewScoreParameterRow(ai, 'AI', 'AI (cmol(+) L-1)', scoreAiController),
+          viewScoreParameterRow(ph, 'pH', 'pH', scorePhController),
+          viewScoreParameterRow(rsp, 'RSP', 'RSP (MPa)', scoreRspController),
+          viewScoreParameterRow(cot, 'COT', 'COT (%)', scoreCotController),
+          viewScoreParameterRow(cpf, 'CPF', 'CPF (cm)', scoreCpfController),
+          viewScoreParameterRow(apf, 'APF', 'APF (cm)', scoreApfController),
+          viewScoreParameterRow(mpr, 'MPR', 'MPR (Manos)', scoreMprController),
+          viewScoreParameterRow(rf, 'RF', 'RF (g planta-1)', scoreRfController),
+          viewScoreParameterRow(cbm, 'CBM', 'CBM (ug C kg^-1 suelo^-1)', scoreCbmController),
+          viewScoreParameterRow(rsimilis, 'R.similis.', 'R.similis. (indiv 100 g-1)', scoreRsimilisController),
           SizedBox(
             width: 265,
             height: 32,
@@ -2412,6 +2012,51 @@ class _AppNavigationState extends State<AppNavigation> {
       ],
     ),
   );
+
+  SizedBox viewScoreParameterRow(double parameterValue, String hintText, String labelText, TextEditingController scoreController)
+  {
+    return SizedBox(
+        height: 35,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 170,
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                  child: TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    controller: TextEditingController(text: parameterValue.toStringAsFixed(2)),
+                    textAlign: TextAlign.left,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                      hintText: hintText,
+                      labelText: labelText,
+                    ),
+                  )
+              ),
+            ),
+            SizedBox(
+              width: 95,
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                  child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                  )
+              ),
+            )
+          ],
+        )
+    );
+  }
 
   void createLocation() {
     var location = Location();
