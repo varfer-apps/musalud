@@ -1840,11 +1840,11 @@ class _AppNavigationState extends State<AppNavigation> {
       content: Wrap(
         children: [
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.053,
             child: Row(
               children: [
                 SizedBox(
-                  width: 170,
+                  width: MediaQuery.of(context).size.width *0.48,
                   child: Padding(
                       padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                       child:TextField(
@@ -1861,7 +1861,7 @@ class _AppNavigationState extends State<AppNavigation> {
                   ),
                 ),
                 SizedBox(
-                  width: 95,
+                  width: MediaQuery.of(context).size.width *0.26,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
                     child:TextField(
@@ -1891,8 +1891,8 @@ class _AppNavigationState extends State<AppNavigation> {
           viewScoreParameterRow(cbm, 'CBM', 'CBM (ug C kg^-1 suelo^-1)', scoreCbmController),
           viewScoreParameterRow(rsimilis, 'R.similis.', 'R.similis. (indiv 100 g-1)', scoreRsimilisController),
           SizedBox(
-            width: 265,
-            height: 32,
+            width: MediaQuery.of(context).size.width *0.74,
+            height: MediaQuery.of(context).size.height *0.05,
             child: Padding(
               padding: const EdgeInsets.only(top: 2, bottom: 0, left: 14, right: 0),
               child:TextField(
@@ -1911,7 +1911,7 @@ class _AppNavigationState extends State<AppNavigation> {
           )
         ],
       ),
-      actionsAlignment: MainAxisAlignment.start,
+      actionsAlignment: MainAxisAlignment.center,
       actions: [
         TextButton(
           onPressed: () async {
@@ -2016,11 +2016,11 @@ class _AppNavigationState extends State<AppNavigation> {
   SizedBox viewScoreParameterRow(double parameterValue, String hintText, String labelText, TextEditingController scoreController)
   {
     return SizedBox(
-        height: 35,
+        height: MediaQuery.of(context).size.height *0.053,
         child: Row(
           children: [
             SizedBox(
-              width: 170,
+              width: MediaQuery.of(context).size.width *0.48,
               child: Padding(
                   padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                   child: TextField(
@@ -2037,9 +2037,9 @@ class _AppNavigationState extends State<AppNavigation> {
               ),
             ),
             SizedBox(
-              width: 95,
+              width: MediaQuery.of(context).size.width *0.26,
               child: Padding(
-                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                  padding: EdgeInsets.only(top: 0, bottom: 0, left: MediaQuery.of(context).size.width *0.11, right: 0),
                   child:TextField(
                       style: const TextStyle(fontSize: 14),
                       readOnly: true,
