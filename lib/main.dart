@@ -1270,11 +1270,11 @@ class _AppNavigationState extends State<AppNavigation> {
       content: Wrap(
         children: [
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
                     child:TextField(
@@ -1308,11 +1308,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                     child: SpinBox(
@@ -1339,7 +1339,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1356,11 +1356,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                     child: SpinBox(
@@ -1387,7 +1387,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1404,11 +1404,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                     child: SpinBox(
@@ -1435,7 +1435,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1452,11 +1452,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                     child: SpinBox(
@@ -1483,7 +1483,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1500,11 +1500,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                     child: SpinBox(
@@ -1531,7 +1531,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1548,11 +1548,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                     child: SpinBox(
@@ -1579,7 +1579,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1596,11 +1596,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                     child: SpinBox(
@@ -1627,7 +1627,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1644,11 +1644,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                     child: SpinBox(
@@ -1675,7 +1675,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1692,11 +1692,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
                     child: SpinBox(
@@ -1722,7 +1722,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1739,11 +1739,11 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
+            height: MediaQuery.of(context).size.height *0.055,
             child: Row(
               children: [
                 SizedBox(
-                  width: 195,
+                  width: MediaQuery.of(context).size.width *0.54,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 4, bottom: 0, left: 8, right: 8),
                     child: SpinBox(
@@ -1769,7 +1769,7 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
                 Expanded(child:
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 2, left: 25, right: 8),
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
                   child:TextField(
                     style: const TextStyle(fontSize: 14),
                     readOnly: true,
@@ -1786,22 +1786,22 @@ class _AppNavigationState extends State<AppNavigation> {
             )
           ),
           SizedBox(
-            height: 35,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
-                child:TextField(
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  readOnly: true,
-                  textAlign: TextAlign.right,
-                  textAlignVertical: TextAlignVertical.top,
-                  controller: overallIndexController,
-                  decoration:  const InputDecoration(
-                    border: InputBorder.none,
-                    prefixText: 'Índice: ',
-                    suffixText: '%',
-                  )
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
+              child:TextField(
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                readOnly: true,
+                textAlign: TextAlign.right,
+                textAlignVertical: TextAlignVertical.top,
+                controller: overallIndexController,
+                decoration:  const InputDecoration(
+                  border: InputBorder.none,
+                  prefixText: 'Índice: ',
+                  suffixText: '%',
                 )
               )
+            )
           )
         ],
       ),
