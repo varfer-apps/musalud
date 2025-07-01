@@ -22,7 +22,7 @@ void main()
 {
   LicenseRegistry.addLicense(() async* {
     final musaludLicense = await rootBundle.loadString('assets/licenses/musalud_license.txt');
-    yield LicenseEntryWithLineBreaks(['musalud_license'], musaludLicense);
+    yield LicenseEntryWithLineBreaks(['Musalud'], musaludLicense);
   });
   LicenseRegistry.addLicense(() async* {
     final flutterMapLicense = await rootBundle.loadString('assets/licenses/flutter_map_license.txt');
@@ -116,7 +116,7 @@ class AppNavigation extends StatefulWidget {
 
 class _AppNavigationState extends State<AppNavigation> {
   int month = 1;
-  int year = 2024;
+  int year = 2025;
   static const int maxHealthIndexesDisplayed = 5;
 
   static const double devCot = 1.34;
@@ -158,6 +158,7 @@ class _AppNavigationState extends State<AppNavigation> {
   int currentPageIndex = 0;
   List<Location> locations = List<Location>.empty(growable: true);
 
+  late PageController pageController;
   late TextEditingController locationController;
   late TextEditingController selectedLocationController;
   late TextEditingController nameController;
@@ -196,6 +197,8 @@ class _AppNavigationState extends State<AppNavigation> {
   @override
   void initState() {
     super.initState();
+
+    pageController = PageController(initialPage: 0);
 
     locationController = TextEditingController();
     selectedLocationController = TextEditingController();
@@ -246,6 +249,7 @@ class _AppNavigationState extends State<AppNavigation> {
 
   @override
   void dispose() {
+    pageController.dispose();
     locationController.dispose();
     selectedLocationController.dispose();
     nameController.dispose();
@@ -270,33 +274,27 @@ class _AppNavigationState extends State<AppNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currentPageIndex,
+        onTap: (index) {
+          pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon:  Icon(Icons.home), label: "Principal"),
+          BottomNavigationBarItem(icon: Icon(Icons.location_on_outlined), activeIcon:  Icon(Icons.location_on), label: "Mis Localidades"),
+          BottomNavigationBarItem(icon: Icon(Icons.note_alt_outlined), activeIcon:  Icon(Icons.note_alt_sharp), label: "Metodología Usada"),
+        ],
+      ),
+      body: PageView(
+        controller: pageController,
+        onPageChanged: (int index) {
           setState(() {
             currentPageIndex = index;
           });
         },
-        indicatorColor: Colors.green,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Principal',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.location_on),
-            label: 'Mis Localidades',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.note_alt_sharp),
-            label: 'Metodología Usada',
-          ),
-        ],
-      ),
-      body: <Widget>[
-        /// Home page
-        Stack(
+        children: [
+            /// Home page
+          Stack(
             children: <Widget>[
               Container(
                 decoration: const BoxDecoration(
@@ -308,266 +306,276 @@ class _AppNavigationState extends State<AppNavigation> {
                 child: null,
               ),
               const Align(
-                  alignment: Alignment(0, 0.55),
-                  child: Text(
-                      'Musalud', style: TextStyle(fontSize: 50.0, color: Color(0xFF00955D), fontWeight: FontWeight.bold)
-                  )
+                alignment: Alignment(0, 0.65),
+                child: Text(
+                  'Musalud', style: TextStyle(fontSize: 45.0, color: Color(0xFF00955D), fontWeight: FontWeight.bold)
+                )
               ),
               Align(
-                alignment: const Alignment(0, 0.65),
+                alignment: const Alignment(0, 0.80),
                 child: ElevatedButton(
-                    child: const Text('Acerca de'),
-                    onPressed: ()  {
-                      showAboutDialog(
-                        context: context,
-                        applicationIcon: const FlutterLogo(),
-                        applicationName: 'Musalud',
-                        applicationVersion: '1.0.0',
-                        applicationLegalese: '\u{a9} ${DateTime.now().year} Jose Pablo Vargas & Olger Vargas',
-                        children: [
-                          const Text(''),
-                          const Text('Musalud es una aplicación de uso libre que proporciona recomendaciones para mejorar la calidad del suelo en cultivos de banano.'),
-                          const Text(''),
-                          const Text("(Musalud is a free use application that provides recommendations to improve soil's health in banana plantations.)"),
-                        ]
-                      );
-                    },
-                  ),
+                  child: const Text('Acerca de'),
+                  onPressed: ()  {
+                    showAboutDialog(
+                      context: context,
+                      applicationIcon: const FlutterLogo(),
+                      applicationName: 'Musalud',
+                      applicationVersion: '1.0.0',
+                      applicationLegalese: '\u{a9} ${DateTime.now().year} Jose Pablo Vargas & Olger Vargas',
+                      children: [
+                        const Text(''),
+                        const Text('Musalud es una aplicación de uso libre que proporciona recomendaciones para mejorar la calidad del suelo en cultivos de banano.'),
+                        const Text(''),
+                        const Text("(Musalud is a free use application that provides recommendations to improve soil's health in banana plantations.)"),
+                      ]
+                    );
+                  },
+                ),
               )
             ]
-        ),
+          ),
 
-        /// Locations page
-        Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 50.0,
-              ),
-              Column(
-                  children: [
-                    Container(
-                        padding: const EdgeInsets.all(10),
-                        child: DropdownMenu<String>(
-                          label: Text(locations.isEmpty ? "Agregue una Localidad..." : "Localidad",),
-                          requestFocusOnTap: true,
-                          width: 500,
-                          enableSearch: true,
-                          hintText: locations.isEmpty ? "Agregue una Localidad..." : "Seleccione una Localidad...",
-                          controller: selectedLocationController,
-                          onSelected: (String? value) {
-                            setState(() {
-                              locationController.text = value!;
-                              lineBarsData = lineChartBarData(getSpots());
-                            });
-                          },
-                          dropdownMenuEntries: locations
-                              .map((location) =>
-                              DropdownMenuEntry(value: location.name??"", label: location.name??""))
-                              .toList(),
-                        )
+          /// Locations page
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height *0.06,
+                ),
+                DropdownMenu<String>(
+                  label: Text(locations.isEmpty ? "Agregue una Localidad..." : "Localidad",),
+                  requestFocusOnTap: true,
+                  width: MediaQuery.of(context).size.width *0.8,
+                  enableSearch: true,
+                  hintText: locations.isEmpty ? "Agregue una Localidad..." : "Seleccione una Localidad...",
+                  controller: selectedLocationController,
+                  inputDecorationTheme: InputDecorationTheme(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 0),
+                    constraints: BoxConstraints.tight(const
+                    Size.fromHeight(35)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  onSelected: (String? value) {
+                    setState(() {
+                      locationController.text = value!;
+                      lineBarsData = lineChartBarData(getSpots());
+                    });
+                  },
+                  dropdownMenuEntries: locations
+                    .map((location) =>
+                    DropdownMenuEntry(value: location.name??"", label: location.name??""))
+                      .toList(),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.8,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child:
+                  Stack(
+                    children: [
+                      Positioned(
+                        left: 0,
+                        child:
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.8,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: FlutterMap(
+                            options: MapOptions(
+                              interactionOptions: const InteractionOptions(
+                                enableMultiFingerGestureRace: true,
+                                flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+                              ),
+                              initialCenter: const LatLng(9.630189, -84.254184), // Center the map over Costa Rica
+                              initialZoom: 7.2,
+                              minZoom: 4,
+                              maxZoom: 18,
+                              keepAlive: true,
+                              cameraConstraint: CameraConstraint.contain(
+                                bounds: LatLngBounds(
+                                  const LatLng(7.826057, -86.019564),
+                                  const LatLng(11.350769, -82.361173),
+                                ),
+                              ),
+                              onTap: (_, p) async {
+                                latitudeController.text = p.latitude.toStringAsFixed(6);
+                                longitudeController.text = p.longitude.toStringAsFixed(6);
+                                final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
+                                if (location == null) return;
+                                setState(() {
+                                  locations.add(location);
+                                  lineBarsData = lineChartBarData(getSpots());
+                                  widget.dataStorage.writeLocationsToCache(locations);
+                                });
+                              },
+                            ),
+                            children: [
+                              TileLayer( // Display map tiles from any source
+                                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
+                                maxNativeZoom: 18, // Scale tiles when the server doesn't support higher zoom levels
+                              ),
+                              MarkerLayer(
+                                  markers: locations.map((location) => getMarker(location)).toList()
+                              ),
+
+                              RichAttributionWidget( // Include a stylish prebuilt attribution widget that meets all requirements
+                                attributions: [
+                                  TextSourceAttribution(
+                                    'OpenStreetMap contributors',
+                                    onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
+                                  ),
+                                  // Also add images...
+                                ],
+                              ),
+                              ///const FlutterMapZoomButtons(
+                              ///  minZoom: 1,
+                              ///  maxZoom: 18,
+                              ///  mini: true,
+                              ///  padding: 10,
+                              ///  alignment: Alignment.bottomRight,
+                              ///)
+                            ],
+                          )
+                        ),
+                      ),
+                      Positioned(
+                        left: MediaQuery.of(context).size.width * 0.65,
+                        child:
+                        Column(
                           children: [
                             Padding(
-                                padding: const EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
+                              padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                              child: FloatingActionButton(
+                                heroTag: 'addLocationButton',
+                                mini: true,
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.deepPurpleAccent,
+                                onPressed: () async {
+                                  latitudeController.text = "9.630189";
+                                  longitudeController.text = "-84.254184";
+                                  final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
+                                  if (location == null) return;
+                                  setState(() {
+                                    locations.add(location);
+                                    lineBarsData = lineChartBarData(getSpots());
+                                    widget.dataStorage.writeLocationsToCache(locations);
+                                  });
+                                },
+                                child: const Icon(Icons.add_location_alt_outlined),
+                              )
+                            ),
+                            if (locationController.text.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
                                 child: FloatingActionButton(
-                                  heroTag: 'addLocationButton',
+                                  heroTag: 'deleteLocationButton',
                                   mini: true,
                                   foregroundColor: Colors.white,
                                   backgroundColor: Colors.deepPurpleAccent,
                                   onPressed: () async {
-                                    latitudeController.text = "9.630189";
-                                    longitudeController.text = "-84.254184";
-                                    final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
-                                    if (location == null) return;
-                                    setState(() {
-                                      locations.add(location);
-                                      lineBarsData = lineChartBarData(getSpots());
-                                      widget.dataStorage.writeLocationsToCache(locations);
-                                    });
+                                    if (await confirm(
+                                      context,
+                                      title: const Text('Confirmación'),
+                                      content: Text('Desea eliminar ${locationController.text} y toda su información, incluidos parámetros e índices de calidad y salud?'),
+                                      textOK: const Text('Sí'),
+                                      textCancel: const Text('No'),
+                                    )) {
+                                      setState(() {
+                                        String locationToRemove = locationController.text;
+                                        locations.removeAt(locations.indexWhere((location) => location.name == locationToRemove));
+                                        locationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
+                                        selectedLocationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
+                                        lineBarsData = lineChartBarData(getSpots());
+                                        widget.dataStorage.writeLocationsToCache(locations);
+                                        showToast('$locationToRemove ha sido eliminada exitosamente', Colors.red, 3, ToastGravity.TOP,
+                                            const Icon(Icons.check, color: Colors.white,));
+                                      });
+                                    }
+                                    return;
                                   },
-                                  child: const Icon(Icons.add_box),
+                                  child: const Icon(Icons.delete_forever),
                                 )
-                            ),
-                            if (locationController.text.isNotEmpty)
-                              Padding(
-                                  padding: const EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
-                                  child: FloatingActionButton(
-                                    heroTag: 'deleteLocationButton',
-                                    mini: true,
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.deepPurpleAccent,
-                                    onPressed: () async {
-                                      if (await confirm(
-                                        context,
-                                        title: const Text('Confirmación'),
-                                        content: Text('Desea eliminar ${locationController.text} y toda su información, incluidos parámetros e índices de calidad y salud?'),
-                                        textOK: const Text('Sí'),
-                                        textCancel: const Text('No'),
-                                      )) {
-                                        setState(() {
-                                          String locationToRemove = locationController.text;
-                                          locations.removeAt(locations.indexWhere((location) => location.name == locationToRemove));
-                                          locationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
-                                          selectedLocationController.text = locations.firstOrNull == null ? "" : locations.first.name??"";
-                                          lineBarsData = lineChartBarData(getSpots());
-                                          widget.dataStorage.writeLocationsToCache(locations);
-                                          showToast('$locationToRemove ha sido eliminada exitosamente', Colors.red, 3, ToastGravity.TOP,
-                                              const Icon(Icons.check, color: Colors.white,));
-                                        });
-                                      }
-                                      return;
-                                    },
-                                    child: const Icon(Icons.indeterminate_check_box),
-                                  )
                               ),
                             if (locationController.text.isNotEmpty)
                               Padding(
-                                  padding: const EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
-                                  child: FloatingActionButton(
-                                    heroTag: 'calculateHealthIndexButton',
-                                    mini: true,
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.deepPurpleAccent,
-                                    onPressed: () async {
-                                      setParameters(null);
-                                      startHealthIndexCalculation();
-                                    },
-                                    child: const Icon(Icons.calculate),
-                                  )
+                                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                                child: FloatingActionButton(
+                                  heroTag: 'calculateHealthIndexButton',
+                                  mini: true,
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.deepPurpleAccent,
+                                  onPressed: () async {
+                                    setParameters(null);
+                                    startHealthIndexCalculation();
+                                  },
+                                  child: const Icon(Icons.calculate),
+                                )
                               ),
                             if (locationController.text.isNotEmpty)
                               Padding(
-                                  padding: const EdgeInsets.only(bottom: 10, top: 0, left: 10, right: 10),
-                                  child: FloatingActionButton(
-                                    heroTag: 'viewHealthIndexesButton',
-                                    mini: true,
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: Colors.deepPurpleAccent,
-                                    onPressed: () async {
-                                      await openViewHealthIndexes();
-                                    },
-                                    child: const Icon(Icons.history_toggle_off),
-                                  )
+                                padding: const EdgeInsets.only(bottom: 5, top: 5, left: 0, right: 0),
+                                child: FloatingActionButton(
+                                  heroTag: 'viewHealthIndexesButton',
+                                  mini: true,
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.deepPurpleAccent,
+                                  onPressed: () async {
+                                    await openViewHealthIndexes();
+                                  },
+                                  child: const Icon(Icons.history_toggle_off),
+                                )
                               )
                           ]
+                        )
+                      )
+                    ]
+                  )
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: Text('Histórico de Calidad y Salud de ${locationController.text}',
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                        fontSize: 15
+                    )
+                  )
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 0, bottom: 0, right: MediaQuery.of(context).size.width *0.1, left: MediaQuery.of(context).size.width *0.1),
+                    child: AspectRatio(
+                      aspectRatio: 2,
+                      child: LineChart(
+                        linearChartData(),
                       ),
                     )
-                  ]
-              ),
-              SizedBox(
-                  height: 380,
-                  child: FlutterMap(
-                    options: MapOptions(
-                      interactionOptions: const InteractionOptions(
-                        enableMultiFingerGestureRace: true,
-                        flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
-                      ),
-                      initialCenter: const LatLng(9.630189, -84.254184), // Center the map over Costa Rica
-                      initialZoom: 7.5,
-                      minZoom: 1,
-                      maxZoom: 18,
-                      keepAlive: true,
-                      cameraConstraint: CameraConstraint.contain(
-                        bounds: LatLngBounds(
-                          const LatLng(7.826057, -86.019564),
-                          const LatLng(11.350769, -82.361173),
-                        ),
-                      ),
-                      onTap: (_, p) async {
-                        latitudeController.text = p.latitude.toStringAsFixed(6);
-                        longitudeController.text = p.longitude.toStringAsFixed(6);
-                        final location = await openAddLocationDialog(latitudeController.text, longitudeController.text);
-                        if (location == null) return;
-                        setState(() {
-                          locations.add(location);
-                          lineBarsData = lineChartBarData(getSpots());
-                          widget.dataStorage.writeLocationsToCache(locations);
-                        });
-                      },
-                    ),
-                    children: [
-                      TileLayer( // Display map tiles from any source
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
-                        maxNativeZoom: 18, // Scale tiles when the server doesn't support higher zoom levels
-                      ),
-                      MarkerLayer(
-                          markers: locations.map((location) => getMarker(location)).toList()
-                      ),
-
-                      RichAttributionWidget( // Include a stylish prebuilt attribution widget that meets all requirements
-                        attributions: [
-                          TextSourceAttribution(
-                            'OpenStreetMap contributors',
-                            onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
-                          ),
-                          // Also add images...
-                        ],
-                      ),
-                      const FlutterMapZoomButtons(
-                        minZoom: 4,
-                        maxZoom: 18,
-                        mini: true,
-                        padding: 10,
-                        alignment: Alignment.bottomRight,
-                      )
-                    ],
                   )
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text('Histórico de Calidad y Salud de ${locationController.text}',
-                      style: const TextStyle(
-                        fontSize: 15,)
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Expanded(
-                child: AspectRatio(
-                  aspectRatio: 1.70,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      right: 30,
-                      left: 15,
-                      top: 5,
-                      bottom: 5,
-                    ),
-                    child: LineChart(
-                      linearChartData(),
-                    ),
-                  ),
                 ),
-              ),
-            ]
-        ),
+              ]
+            )
+          ),
 
-        /// Methodologies page
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          /// Methodologies page
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 50.0,
-              ),
               SizedBox(
-                width: 400,
-                height: 500,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height*0.7,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 50, 10, 0),
                   child: TabContainer(
                     color: Theme.of(context).colorScheme.primary,
                     tabEdge: TabEdge.left,
-                      tabExtent: 100.0,
+                    tabExtent: MediaQuery.of(context).size.width*0.25,
                     tabsStart: 0.1,
                     tabsEnd: 0.9,
                     childPadding: const EdgeInsets.all(20.0),
@@ -583,13 +591,13 @@ class _AppNavigationState extends State<AppNavigation> {
                       Text('RF'),
                       Text('R.similis')
                     ],
-                    selectedTextStyle: const TextStyle(
+                    selectedTextStyle: TextStyle(
                       color: Colors.white,
-                      fontSize: 25.0,
+                      fontSize: MediaQuery.of(context).size.width * 0.05,
                     ),
-                    unselectedTextStyle: const TextStyle(
+                    unselectedTextStyle: TextStyle(
                       color: Colors.black,
-                      fontSize: 20.0,
+                      fontSize: MediaQuery.of(context).size.width * 0.04,
                     ),
                     children: <Widget>[
                       SingleChildScrollView(
@@ -602,19 +610,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Combustión seca.',
                               style: TextStyle(color: Colors.white),
@@ -632,19 +640,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'En agua.',
                               style: TextStyle(color: Colors.white),
@@ -662,19 +670,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'En KCl 1M.',
                               style: TextStyle(color: Colors.white),
@@ -692,19 +700,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Fumigación-extracción. Vance et al. (1987).',
                               style: TextStyle(color: Colors.white),
@@ -722,7 +730,7 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Superficial, humedad a capacidad de campo, utilizando un penetrómetro marca Eijkelkamp® modelo 06.01SB.',
                               style: TextStyle(color: Colors.white),
@@ -740,7 +748,7 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Planta en edad de parición. Circunferencia a 1 m de altura.',
                               style: TextStyle(color: Colors.white),
@@ -758,7 +766,7 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Hijo de planta en edad de parición. Altura del hijo de sucesión, de la base a la "v" que se forma entre la hoja candela y hoja #1.',
                               style: TextStyle(color: Colors.white),
@@ -776,7 +784,7 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Conteo de manos en frutas de 11 o 12 semanas de embolse.',
                               style: TextStyle(color: Colors.white),
@@ -794,19 +802,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Muestra tomada en un volumen de suelo de 13x13x30 cm, entre madre e hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Metodología descrita por Vargas y Araya (2018)',
                               style: TextStyle(color: Colors.white),
@@ -824,19 +832,19 @@ class _AppNavigationState extends State<AppNavigation> {
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Muestra tomada en un volumen de suelo de 13x13x30 cm, entre madre e hijo de sucesión.',
                               style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(height: 50.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
                             Text(
                               'Metodología de análisis',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
                               'Metodología descrita por Vargas y Araya (2018)',
                               style: TextStyle(color: Colors.white),
@@ -849,15 +857,16 @@ class _AppNavigationState extends State<AppNavigation> {
                 ),
               ),
             ]
-        )
-      ][currentPageIndex],
+          )
+        ]
+      )
     );
   }
 
   void showToast(String message, Color color, int duration, ToastGravity toastGravity, Icon icon){
     fToast.showToast(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25.0),
           color: color,
@@ -866,14 +875,11 @@ class _AppNavigationState extends State<AppNavigation> {
           mainAxisSize: MainAxisSize.min,
           children: [
             icon,
-            const SizedBox(
-              width: 12.0,
-            ),
             Text(
-                message,
-                style: const TextStyle(
-                  color: Colors.white,
-                )
+              message,
+              style: const TextStyle(
+                color: Colors.white,
+              )
             ),
           ],
         ),
@@ -914,10 +920,10 @@ class _AppNavigationState extends State<AppNavigation> {
       if (location.healthIndexes!.isNotEmpty) {
         if (count != null) {
           lastHealthIndexes = location.healthIndexes!.reversed
-              .take(count)
-              .toList()
-              .reversed
-              .toList();
+            .take(count)
+            .toList()
+            .reversed
+            .toList();
         }
         else {
           lastHealthIndexes = location.healthIndexes!;
@@ -930,7 +936,7 @@ class _AppNavigationState extends State<AppNavigation> {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontSize: 12,
     );
     Widget text = const Text("");
 
@@ -939,40 +945,37 @@ class _AppNavigationState extends State<AppNavigation> {
       int i = value.toInt();
       var healthIndex = lastHealthIndexes[i];
       text = Text(
-          '${getShortMonth(healthIndex.month??0)}\n${healthIndex.year??0}',
-          softWrap: true,
-          style: style,
-          textAlign: TextAlign.center
+        '${getShortMonth(healthIndex.month??0)}\n${healthIndex.year??0}',
+        softWrap: true,
+        style: style,
+        textAlign: TextAlign.center
       );
     }
 
     return SideTitleWidget(
-        axisSide: meta.axisSide,
-        child: SizedBox(
-          width: 35,
-          child: text,
-        )
+      axisSide: meta.axisSide,
+      child: SizedBox(
+        width: 30,
+        child: text,
+      )
     );
   }
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 14,
+      fontSize: 12
     );
     String text;
     switch (value.toInt()) {
-      case 0:
-        text = '0%';
+      case 10:
+        text = '10%';
         break;
-      case 25:
-        text = '25%';
+      case 35:
+        text = '35%';
         break;
-      case 50:
-        text = '50%';
-        break;
-      case 75:
-        text = '75%';
+      case 65:
+        text = '65%';
       case 100:
         text = '100%';
         break;
@@ -1074,7 +1077,7 @@ class _AppNavigationState extends State<AppNavigation> {
                         spot.y > 10 ? Colors.amber :
                         Colors.red;
           return FlDotCirclePainter(
-            radius: 13,
+            radius: 7,
             color: color,
             strokeWidth: 2,
             strokeColor: color,
@@ -1093,7 +1096,7 @@ class _AppNavigationState extends State<AppNavigation> {
       }
     }
     return LineChartData(
-      showingTooltipIndicators: healthIndexes.take(5).toList().asMap().keys
+      showingTooltipIndicators: healthIndexes.take(4).toList().asMap().keys
           .map((index) {
         return ShowingTooltipIndicators([
           LineBarSpot(
@@ -1135,7 +1138,7 @@ class _AppNavigationState extends State<AppNavigation> {
         show: false,
       ),
       minX: 0,
-      maxX: 4,
+      maxX: 3,
       minY: 0,
       maxY: 100,
       lineBarsData: [lineBarsData],
@@ -1143,6 +1146,7 @@ class _AppNavigationState extends State<AppNavigation> {
         enabled: true,
         handleBuiltInTouches: false,
         touchTooltipData: LineTouchTooltipData(
+          tooltipMargin: 7,
           getTooltipColor: (LineBarSpot touchedSpot) => Colors.transparent,
           tooltipPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
@@ -1151,8 +1155,9 @@ class _AppNavigationState extends State<AppNavigation> {
                 '${lineBarSpot.y.toStringAsFixed(2)} %',
                 const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 10,
+                  fontSize: 8,
                 ),
+                textAlign: TextAlign.left
               );
             }).toList();
           },
@@ -1182,12 +1187,14 @@ class _AppNavigationState extends State<AppNavigation> {
   Future<Location?> openAddLocationDialog(String latitude, String longitude) => showDialog<Location>(
     context: context,
     builder: (context) => AlertDialog(
+      insetPadding: const EdgeInsets.all(10),
       title: const Text("Nueva Localidad"),
       content: Column(
         children: [
           Form(
             autovalidateMode: AutovalidateMode.always,
             child: TextFormField(
+              maxLength: 35,
               autofocus: true,
               controller: nameController,
               decoration: const InputDecoration(
@@ -1258,481 +1265,543 @@ class _AppNavigationState extends State<AppNavigation> {
   Future<HealthIndex?> openCalculateHealthIndexDialog() => showDialog<HealthIndex>(
     context: context,
     builder: (context) => AlertDialog(
+      insetPadding: const EdgeInsets.all(10),
       title: Text('Cálculo de Índice de Calidad y Salud de ${locationController.text} - ${getMonth(DateTime.now().month)}, ${DateTime.now().year}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
       content: Wrap(
         children: [
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          textAlign: TextAlign.center,
-                          min: 0,
-                          max: 5,
-                          value: ai,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                              hintText: 'AI',
-                              labelText: 'AI (cmol(+) L-1)',
-                              labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            ai = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scoreAiController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      readOnly: true,
+                      textAlign: TextAlign.left,
+                      controller: TextEditingController(text: "Paramétro"),
+                      decoration:  const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
                       )
+                    )
                   ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    controller: TextEditingController(text: "Nota"),
+                    decoration:  const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          min: 0,
-                          max: 8,
-                          value: ph,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                              hintText: 'pH',
-                              labelText: 'pH',
-                              labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            ph = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 5,
+                      value: ai,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'AI',
+                        labelText: 'AI (cmol(+) L-1)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        ai = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scorePhController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreAiController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          min: 0,
-                          max: 2,
-                          value: rsp,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                              hintText: 'RSP',
-                              labelText: 'RSP (MPa)',
-                              labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            rsp = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 8,
+                      value: ph,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'pH',
+                        labelText: 'pH',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        ph = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scoreRspController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scorePhController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          min: 0,
-                          max: 11,
-                          value: cot,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                              hintText: 'COT',
-                              labelText: 'COT (%)',
-                              labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            cot = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 2,
+                      value: rsp,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'RSP',
+                        labelText: 'RSP (MPa)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        rsp = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 2, bottom: 2, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scoreCotController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreRspController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          min: 0,
-                          max: 120,
-                          value: cpf,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                              hintText: 'CPF',
-                              labelText: 'CPF (cm)',
-                              labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            cpf = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 11,
+                      value: cot,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'COT',
+                        labelText: 'COT (%)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        cot = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scoreCpfController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreCotController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          min: 0,
-                          max: 500,
-                          value: apf,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                              hintText: 'APF',
-                              labelText: 'APF (cm)',
-                              labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            apf = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 120,
+                      value: cpf,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'CPF',
+                        labelText: 'CPF (cm)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        cpf = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scoreApfController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreCpfController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          min: 4,
-                          max: 12,
-                          value: mpr,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                              hintText: 'MPR',
-                              labelText: 'MPR (Manos)',
-                              labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            mpr = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 500,
+                      value: apf,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'APF',
+                        labelText: 'APF (cm)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        apf = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scoreMprController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreApfController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          min: 0,
-                          max: 200,
-                          value: rf,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                              hintText: 'RF',
-                              labelText: 'RF (g planta-1)',
-                              labelStyle: TextStyle(color: Colors.red)
-                          ),
-                          onChanged: (value) => setState(() {
-                            rf = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 4,
+                      max: 12,
+                      value: mpr,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'MPR',
+                        labelText: 'MPR (Manos)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        mpr = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scoreRfController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreMprController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          min: 0,
-                          max: 700,
-                          value: cbm,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            hintText: 'CBM',
-                            labelText: 'CBM (ug C kg^-1 suelo^-1)',
-                          ),
-                          onChanged: (value) => setState(() {
-                            cbm = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 200,
+                      value: rf,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'RF',
+                        labelText: 'RF (g planta-1)',
+                        labelStyle: TextStyle(color: Colors.red)
+                      ),
+                      onChanged: (value) => setState(() {
+                        rf = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scoreCbmController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreRfController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 195,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        child: SpinBox(
-                          min: 0,
-                          max: 70000,
-                          value: rsimilis,
-                          decimals: 2,
-                          step: 0.01,
-                          acceleration: 0.01,
-                          decoration: const InputDecoration(
-                            hintText: 'R.similis.',
-                            labelText: 'R.similis. (indiv 100 g-1)',
-                          ),
-                          onChanged: (value) => setState(() {
-                            rsimilis = value;
-                            calculateHealthIndex();
-                          }),
-                          validator: (text) => text!.isEmpty ? 'Required' : null,
-                        )
-                    ),
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 700,
+                      value: cbm,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'CBM',
+                        labelText: 'CBM (ug C kg^-1 suelo^-1)',
+                      ),
+                      onChanged: (value) => setState(() {
+                        cbm = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
                   ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.center,
-                          controller: scoreRsimilisController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreCbmController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
                   )
-                ],
-              )
+                ),
+                )
+              ],
+            )
           ),
-          Padding(
-              padding: const EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+          SizedBox(
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.54,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4, bottom: 0, left: 8, right: 8),
+                    child: SpinBox(
+                      textStyle: const TextStyle(fontSize: 14),
+                      min: 0,
+                      max: 70000,
+                      value: rsimilis,
+                      decimals: 2,
+                      step: 0.01,
+                      acceleration: 0.01,
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                        hintText: 'R.similis.',
+                        labelText: 'R.similis. (indiv 100 g-1)',
+                      ),
+                      onChanged: (value) => setState(() {
+                        rsimilis = value;
+                        calculateHealthIndex();
+                      }),
+                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                    )
+                  ),
+                ),
+                Expanded(child:
+                Padding(
+                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                  child:TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    textAlign: TextAlign.right,
+                    textAlignVertical: TextAlignVertical.bottom,
+                    controller: scoreRsimilisController,
+                    decoration:  const InputDecoration(
+                      suffixText: '%',
+                    )
+                  )
+                ),
+                )
+              ],
+            )
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height *0.055,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
               child:TextField(
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  readOnly: true,
-                  textAlign: TextAlign.right,
-                  textAlignVertical: TextAlignVertical.center,
-                  controller: overallIndexController,
-                  decoration:  const InputDecoration(
-                    prefixText: 'ÍNDICE: ',
-                    suffixText: '%',
-                  )
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                readOnly: true,
+                textAlign: TextAlign.right,
+                textAlignVertical: TextAlignVertical.top,
+                controller: overallIndexController,
+                decoration:  const InputDecoration(
+                  border: InputBorder.none,
+                  prefixText: 'Índice: ',
+                  suffixText: '%',
+                )
               )
+            )
           )
         ],
       ),
@@ -1746,9 +1815,9 @@ class _AppNavigationState extends State<AppNavigation> {
         TextButton(
           onPressed: () {
             if (scoreAiController.text.isEmpty || scoreApfController.text.isEmpty
-                || scoreCotController.text.isEmpty || scoreCpfController.text.isEmpty
-                || scoreMprController.text.isEmpty || scoreMprController.text.isEmpty
-                || scoreRfController.text.isEmpty || scoreRspController.text.isEmpty)
+              || scoreCotController.text.isEmpty || scoreCpfController.text.isEmpty
+              || scoreMprController.text.isEmpty || scoreMprController.text.isEmpty
+              || scoreRfController.text.isEmpty || scoreRspController.text.isEmpty)
             {
               showToast("Los parámetros en rojo son obligatorios", Colors.orangeAccent, 2, ToastGravity.BOTTOM, const Icon(Icons.warning_amber, color: Colors.white,));
               return;
@@ -1766,397 +1835,83 @@ class _AppNavigationState extends State<AppNavigation> {
   Future<HealthIndex?> openViewHealthIndexDialog(HealthIndex healthIndex) => showDialog<HealthIndex>(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text('Índice de Calidad y Salud de ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+      insetPadding: const EdgeInsets.all(10),
+      title: Text('Índice de Calidad y Salud de ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
       content: Wrap(
         children: [
           SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: ai.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                              hintText: 'AI',
-                              labelText: 'AI (cmol(+) L-1)'
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+            height: MediaQuery.of(context).size.height *0.053,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.48,
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                       child:TextField(
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           readOnly: true,
-                          textAlign: TextAlign.right,
+                          textAlign: TextAlign.left,
                           textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreAiController,
+                          controller: TextEditingController(text: "Parámetro"),
                           decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                           )
                       )
                   ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: ph.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                              hintText: 'pH',
-                              labelText: 'pH'
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scorePhController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width *0.26,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 25, right: 0),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: TextEditingController(text: "Nota"),
+                      decoration:  const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                       )
-                  ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: rsp.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            hintText: 'RSP',
-                            labelText: 'RSP (MPa)',
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreRspController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: cot.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                              hintText: 'COT',
-                              labelText: 'COT (%)'
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreCotController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: cpf.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            hintText: 'CPF',
-                            labelText: 'CPF (cm)',
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreCpfController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: apf.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            hintText: 'APF',
-                            labelText: 'APF (cm)',
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreApfController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: mpr.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            hintText: 'MPR',
-                            labelText: 'MPR (Manos)',
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreMprController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: rf.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            hintText: 'RF',
-                            labelText: 'RF (g planta-1)',
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreRfController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: cbm.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            hintText: 'CBM',
-                            labelText: 'CBM (ug C kg^-1 suelo^-1)',
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreCbmController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
-                  )
-                ],
-              )
-          ),
-          SizedBox(
-              height: 56,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 180,
-                    child: Padding(
-                        padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                        child: TextField(
-                          readOnly: true,
-                          controller: TextEditingController(text: rsimilis.toStringAsFixed(2)),
-                          textAlign: TextAlign.left,
-                          decoration: const InputDecoration(
-                            hintText: 'R.similis.',
-                            labelText: 'R.similis. (indiv 100 g-1)',
-                          ),
-                        )
-                    ),
-                  ),
-                  Expanded(child:
-                  Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
-                      child:TextField(
-                          readOnly: true,
-                          textAlign: TextAlign.right,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: scoreRsimilisController,
-                          decoration:  const InputDecoration(
-                            prefixText: 'Nota: ',
-                            suffixText: '%',
-                          )
-                      )
-                  ),
-                  )
-                ],
-              )
-          ),
-          Expanded(
-            child: Padding(
-                padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
-                child:TextField(
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.center,
-                    controller: overallIndexController,
-                    decoration:  const InputDecoration(
-                      prefixText: 'ÍNDICE: ',
-                      suffixText: '%',
                     )
+                  ),
                 )
+              ],
+            )
+          ),
+          viewScoreParameterRow(ai, 'AI', 'AI (cmol(+) L-1)', scoreAiController),
+          viewScoreParameterRow(ph, 'pH', 'pH', scorePhController),
+          viewScoreParameterRow(rsp, 'RSP', 'RSP (MPa)', scoreRspController),
+          viewScoreParameterRow(cot, 'COT', 'COT (%)', scoreCotController),
+          viewScoreParameterRow(cpf, 'CPF', 'CPF (cm)', scoreCpfController),
+          viewScoreParameterRow(apf, 'APF', 'APF (cm)', scoreApfController),
+          viewScoreParameterRow(mpr, 'MPR', 'MPR (Manos)', scoreMprController),
+          viewScoreParameterRow(rf, 'RF', 'RF (g planta-1)', scoreRfController),
+          viewScoreParameterRow(cbm, 'CBM', 'CBM (ug C kg^-1 suelo^-1)', scoreCbmController),
+          viewScoreParameterRow(rsimilis, 'R.similis.', 'R.similis. (indiv 100 g-1)', scoreRsimilisController),
+          SizedBox(
+            width: MediaQuery.of(context).size.width *0.74,
+            height: MediaQuery.of(context).size.height *0.05,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 2, bottom: 0, left: 14, right: 0),
+              child:TextField(
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                readOnly: true,
+                textAlign: TextAlign.right,
+                textAlignVertical: TextAlignVertical.top,
+                controller: overallIndexController,
+                decoration:  const InputDecoration(
+                  border: InputBorder.none,
+                  prefixText: 'Índice: ',
+                  suffixText: '%',
+                )
+              )
             ),
           )
         ],
       ),
+      actionsAlignment: MainAxisAlignment.center,
       actions: [
         TextButton(
           onPressed: () async {
@@ -2177,34 +1932,30 @@ class _AppNavigationState extends State<AppNavigation> {
   Future openViewHealthIndexes() => showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text('Índices de Calidad y Salud de ${locationController.text}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+      insetPadding: const EdgeInsets.all(10),
+      title: Text('Índices de Calidad y Salud de ${locationController.text}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
       content:
       SizedBox(
-          height: 600,
-          width: 300,
-          child: ListView.separated(
-            itemCount: locations.firstWhere((location) => location.name == locationController.text).healthIndexes!.length,
-            itemBuilder: (context, index) {
-              final healthIndex = locations.firstWhere((location) => location.name == locationController.text).healthIndexes![index];
-              return ListTile(
-                  leading: const Icon(Icons.calendar_month),
-                  title: Text('${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}'),
-                  trailing: const Icon(Icons.remove_red_eye),
-                  onTap: () async { //
-                    setParameters(healthIndex);//                          <-- onTap
-                    if (healthIndex.year == DateTime.now().year && healthIndex.month == DateTime.now().month) {
-                      startHealthIndexCalculation();
-                    }
-                    else {
-                      await openViewHealthIndexDialog(healthIndex);
-                    }
-                  }
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-          )
+        height: 600,
+        width: 300,
+        child: ListView.separated(
+          itemCount: locations.firstWhere((location) => location.name == locationController.text).healthIndexes!.length,
+          itemBuilder: (context, index) {
+            final healthIndex = locations.firstWhere((location) => location.name == locationController.text).healthIndexes![index];
+            return ListTile(
+              leading: const Icon(Icons.calendar_month),
+              title: Text('${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}'),
+              trailing: const Icon(Icons.remove_red_eye),
+              onTap: () async { //
+                setParameters(healthIndex);//                          <-- onTap
+                await openViewHealthIndexDialog(healthIndex);
+              }
+            );
+          },
+          separatorBuilder: (context, index) {
+            return const Divider();
+          },
+        )
       ),
       actions: [
         TextButton(
@@ -2220,43 +1971,92 @@ class _AppNavigationState extends State<AppNavigation> {
   Future<HealthIndex?> openRecommendationsDialog(HealthIndex healthIndex) => showDialog<HealthIndex>(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text('Recomendaciones para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-      content: SingleChildScrollView(
-        child: Container(
-          height: 1400,
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              BulletedList(
-                listItems: getUrgentRecommendations(healthIndex),
-                bullet: const Icon(Icons.warning, color: Colors.red),
-              ),
-              BulletedList(
-                listItems: getWarningRecommendations(healthIndex),
-                bullet: const Icon(Icons.warning_amber, color: Colors.yellow),
-              ),
-              BulletedList(
-                listItems: getGoodRecommendations(healthIndex),
-                bullet: const Icon(Icons.check, color: Colors.green),
-              ),
-            ],
+      insetPadding: const EdgeInsets.all(10),
+      title: Text('Recomendaciones para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+      content: Scrollbar(
+        interactive: true,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                BulletedList(
+                  listItems: getUrgentRecommendations(healthIndex),
+                  bullet: const Icon(Icons.warning, color: Colors.red),
+                ),
+                BulletedList(
+                  listItems: getWarningRecommendations(healthIndex),
+                  bullet: const Icon(Icons.warning_amber, color: Colors.yellow),
+                ),
+                BulletedList(
+                  listItems: getGoodRecommendations(healthIndex),
+                  bullet: const Icon(Icons.check, color: Colors.green),
+                ),
+              ],
+            ),
           ),
         ),
       ),
       actions: [
         TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Align(
-                alignment: Alignment.bottomRight,
-                child: Text('CERRAR')
-            )
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Align(
+            alignment: Alignment.bottomRight,
+            child: Text('CERRAR')
+          )
         ),
       ],
     ),
   );
+
+  SizedBox viewScoreParameterRow(double parameterValue, String hintText, String labelText, TextEditingController scoreController)
+  {
+    return SizedBox(
+        height: MediaQuery.of(context).size.height *0.053,
+        child: Row(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width *0.48,
+              child: Padding(
+                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                  child: TextField(
+                    style: const TextStyle(fontSize: 14),
+                    readOnly: true,
+                    controller: TextEditingController(text: parameterValue.toStringAsFixed(2)),
+                    textAlign: TextAlign.left,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                      hintText: hintText,
+                      labelText: labelText,
+                    ),
+                  )
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width *0.26,
+              child: Padding(
+                  padding: EdgeInsets.only(top: 0, bottom: 0, left: MediaQuery.of(context).size.width *0.11, right: 0),
+                  child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreController,
+                      decoration:  const InputDecoration(
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
+                        suffixText: '%',
+                      )
+                  )
+              ),
+            )
+          ],
+        )
+    );
+  }
 
   void createLocation() {
     var location = Location();
@@ -2316,16 +2116,16 @@ class _AppNavigationState extends State<AppNavigation> {
         rf = hi.rf??0;
         rsimilis = hi.rsimilis??0;
 
-        scoreCotController.text = hi.scoreCot == 0 ? "" : hi.scoreCot!.toStringAsFixed(2);
-        scorePhController.text = hi.scorePh == 0 ? "" : hi.scorePh!.toStringAsFixed(2);
-        scoreAiController.text = hi.scoreAi == 0 ? "" : hi.scoreAi!.toStringAsFixed(2);
-        scoreRspController.text = hi.scoreRsp == 0 ? "" : hi.scoreRsp!.toStringAsFixed(2);
-        scoreCbmController.text = hi.scoreCbm == 0 ? "" : hi.scoreCbm!.toStringAsFixed(2);
-        scoreCpfController.text = hi.scoreCpf == 0 ? "" : hi.scoreCpf!.toStringAsFixed(2);
-        scoreApfController.text = hi.scoreApf == 0 ? "" : hi.scoreApf!.toStringAsFixed(2);
-        scoreMprController.text = hi.scoreMpr == 0 ? "" : hi.scoreMpr!.toStringAsFixed(2);
-        scoreRfController.text = hi.scoreRf == 0 ? "" : hi.scoreRf!.toStringAsFixed(2);
-        scoreRsimilisController.text = hi.scoreRsimilis == 0 ? "" : hi.scoreRsimilis!.toStringAsFixed(2);
+        scoreCotController.text = hi.cot! == 0 ? "" : hi.scoreCot!.toStringAsFixed(2);
+        scorePhController.text = hi.ph! == 0 ? "" : hi.scorePh!.toStringAsFixed(2);
+        scoreAiController.text = hi.ai! == 5 ? "" : hi.scoreAi!.toStringAsFixed(2);
+        scoreRspController.text = hi.rsp! == 2 ? "" : hi.scoreRsp!.toStringAsFixed(2);
+        scoreCbmController.text = hi.cbm! == 0 ? "" : hi.scoreCbm!.toStringAsFixed(2);
+        scoreCpfController.text = hi.cpf! == 0 ? "" : hi.scoreCpf!.toStringAsFixed(2);
+        scoreApfController.text = hi.apf! == 0 ? "" : hi.scoreApf!.toStringAsFixed(2);
+        scoreMprController.text = hi.mpr! == 0 ? "" : hi.scoreMpr!.toStringAsFixed(2);
+        scoreRfController.text = hi.rf! == 0 ? "" : hi.scoreRf!.toStringAsFixed(2);
+        scoreRsimilisController.text = hi.rsimilis! == 0 ? "" : hi.scoreRsimilis!.toStringAsFixed(2);
 
         overallIndexController.text = hi.index == 0 ? "" : hi.index!.toStringAsFixed(2);
       }
@@ -2373,7 +2173,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (cot > 0) {
       var scoreCot = double.parse((distCot.cdf(cot) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreCot;
-      scoreCotController.text = scoreCot.toString();
+      scoreCotController.text = scoreCot.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2383,13 +2183,13 @@ class _AppNavigationState extends State<AppNavigation> {
     if (ph > 0 && ph <= 5.5) {
       var scorePh = double.parse((distPh1.cdf(ph) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scorePh;
-      scorePhController.text = scorePh.toString();
+      scorePhController.text = scorePh.toStringAsFixed(2);
       parametersEntered++;
     }
     else if (ph > 5.5 && ph <= 8) {
       var scorePh = double.parse(((1 - distPh2.cdf(ph)) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scorePh;
-      scorePhController.text = scorePh.toString();
+      scorePhController.text = scorePh.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2399,7 +2199,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (ai < 5) {
       var scoreAi = double.parse(((1 - distAi.cdf(ai)) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreAi;
-      scoreAiController.text = scoreAi.toString();
+      scoreAiController.text = scoreAi.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2409,7 +2209,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (rsp < 2) {
       var scoreRsp = double.parse(((1- distRsp.cdf(rsp)) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreRsp;
-      scoreRspController.text = scoreRsp.toString();
+      scoreRspController.text = scoreRsp.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2419,7 +2219,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (cbm > 0) {
       var scoreCbm = double.parse((distCbm.cdf(cbm) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreCbm;
-      scoreCbmController.text = scoreCbm.toString();
+      scoreCbmController.text = scoreCbm.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2429,7 +2229,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (cpf > 0) {
       var scoreCpf = double.parse((distCpf.cdf(cpf) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreCpf;
-      scoreCpfController.text = scoreCpf.toString();
+      scoreCpfController.text = scoreCpf.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2439,7 +2239,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (apf > 0) {
       var scoreApf = double.parse((distApf.cdf(apf) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreApf;
-      scoreApfController.text = scoreApf.toString();
+      scoreApfController.text = scoreApf.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2449,7 +2249,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (mpr > 0) {
       var scoreMpr = double.parse((distMpr.cdf(mpr) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreMpr;
-      scoreMprController.text = scoreMpr.toString();
+      scoreMprController.text = scoreMpr.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2459,7 +2259,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (rf > 0) {
       var scoreRf = double.parse((distRf.cdf(rf) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreRf;
-      scoreRfController.text = scoreRf.toString();
+      scoreRfController.text = scoreRf.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2469,7 +2269,7 @@ class _AppNavigationState extends State<AppNavigation> {
     if (rsimilis > 0) {
       var scoreRsimilis = double.parse(((1 - distRsimilis.cdf(rsimilis)) * 100).toStringAsFixed(2));
       scoresSum = scoresSum + scoreRsimilis;
-      scoreRsimilisController.text = scoreRsimilis.toString();
+      scoreRsimilisController.text = scoreRsimilis.toStringAsFixed(2);
       parametersEntered++;
     }
     else {
@@ -2606,29 +2406,29 @@ class _AppNavigationState extends State<AppNavigation> {
     }
 
     return Marker(
-        point: LatLng(location.latitude??0, location.longitude??0),
-        width: 64,
-        height: 64,
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(text),
-                duration: const Duration(seconds: 5),
-                backgroundColor: color,
-                showCloseIcon: true,
-              ),
-            );
-            setState(() {
-              locationController.text = location.name??"";
-              selectedLocationController.text = location.name??"";
-              lineBarsData = lineChartBarData(getSpots());
-            });
-          },
-          child: Icon(Icons.location_pin, size: 35, color: color),
-        )
+      point: LatLng(location.latitude??0, location.longitude??0),
+      width: 64,
+      height: 64,
+      alignment: Alignment.center,
+      child: GestureDetector(
+        onTap: () {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(text),
+              duration: const Duration(seconds: 5),
+              backgroundColor: color,
+              showCloseIcon: true,
+            ),
+          );
+          setState(() {
+            locationController.text = location.name??"";
+            selectedLocationController.text = location.name??"";
+            lineBarsData = lineChartBarData(getSpots());
+          });
+        },
+        child: Icon(Icons.location_pin, size: 35, color: color),
+      )
     );
   }
 }
@@ -2650,10 +2450,10 @@ class Location {
     }
 
     return Location(
-        name: json['name'],
-        latitude: json['latitude'],
-        longitude: json['longitude'],
-        healthIndexes: hIndexes
+      name: json['name'],
+      latitude: json['latitude'],
+      longitude: json['longitude'],
+      healthIndexes: hIndexes
     );
   }
 
