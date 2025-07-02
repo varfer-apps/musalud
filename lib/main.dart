@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -1267,7 +1268,7 @@ class _AppNavigationState extends State<AppNavigation> {
     context: context,
     builder: (context) =>
       AlertDialog(
-        insetPadding: const EdgeInsets.all(10),
+        insetPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
         title: Text('Cálculo de Índice de Calidad y Salud de ${locationController.text} - ${getMonth(DateTime.now().month)}, ${DateTime.now().year}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
         content: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -1811,27 +1812,33 @@ class _AppNavigationState extends State<AppNavigation> {
         )
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('CANCELAR'),
+        SizedBox(
+          height: MediaQuery.of(context).size.height *0.055,
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('CANCELAR'),
+          )
         ),
-        TextButton(
-          onPressed: () {
-            if (scoreAiController.text.isEmpty || scoreApfController.text.isEmpty
-              || scoreCotController.text.isEmpty || scoreCpfController.text.isEmpty
-              || scoreMprController.text.isEmpty || scoreMprController.text.isEmpty
-              || scoreRfController.text.isEmpty || scoreRspController.text.isEmpty)
-            {
-              showToast("Los parámetros en rojo son obligatorios", Colors.orangeAccent, 2, ToastGravity.BOTTOM, const Icon(Icons.warning_amber, color: Colors.white,));
-              return;
-            }
-            else {
-              createHealthIndex();
-            }
-          },
-          child: const Text('GUARDAR'),
+        SizedBox(
+          height: MediaQuery.of(context).size.height *0.055,
+          child: TextButton(
+            onPressed: () {
+              if (scoreAiController.text.isEmpty || scoreApfController.text.isEmpty
+                || scoreCotController.text.isEmpty || scoreCpfController.text.isEmpty
+                || scoreMprController.text.isEmpty || scoreMprController.text.isEmpty
+                || scoreRfController.text.isEmpty || scoreRspController.text.isEmpty)
+              {
+                showToast("Los parámetros en rojo son obligatorios", Colors.orangeAccent, 2, ToastGravity.BOTTOM, const Icon(Icons.warning_amber, color: Colors.white,));
+                return;
+              }
+              else {
+                createHealthIndex();
+              }
+            },
+            child: const Text('GUARDAR'),
+          )
         ),
       ],
     )
@@ -1917,7 +1924,7 @@ class _AppNavigationState extends State<AppNavigation> {
         ],
       ),
       actionsAlignment: MainAxisAlignment.end,
-      actionsPadding: EdgeInsets.only(top: 0, bottom: MediaQuery.of(context).size.height *0.02, left: 0, right: MediaQuery.of(context).size.width *0.13),
+      actionsPadding: EdgeInsets.only(top: 0, bottom: MediaQuery.of(context).size.height *0.02, left: 0, right: MediaQuery.of(context).size.width *0.11),
       actions: [
         TextButton(
           onPressed: () async {
