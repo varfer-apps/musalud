@@ -274,6 +274,7 @@ class _AppNavigationState extends State<AppNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentPageIndex,
         onTap: (index) {
@@ -1264,546 +1265,550 @@ class _AppNavigationState extends State<AppNavigation> {
 
   Future<HealthIndex?> openCalculateHealthIndexDialog() => showDialog<HealthIndex>(
     context: context,
-    builder: (context) => AlertDialog(
-      insetPadding: const EdgeInsets.all(10),
-      title: Text('Cálculo de Índice de Calidad y Salud de ${locationController.text} - ${getMonth(DateTime.now().month)}, ${DateTime.now().year}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-      content: Wrap(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+    builder: (context) =>
+      AlertDialog(
+        insetPadding: const EdgeInsets.all(10),
+        title: Text('Cálculo de Índice de Calidad y Salud de ${locationController.text} - ${getMonth(DateTime.now().month)}, ${DateTime.now().year}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+        content: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Wrap(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                      child:TextField(
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        readOnly: true,
+                        textAlign: TextAlign.left,
+                        controller: TextEditingController(text: "Paramétro"),
+                        decoration:  const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
+                        )
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                     child:TextField(
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       readOnly: true,
-                      textAlign: TextAlign.left,
-                      controller: TextEditingController(text: "Paramétro"),
+                      textAlign: TextAlign.right,
+                      controller: TextEditingController(text: "Nota"),
                       decoration:  const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
                       )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    controller: TextEditingController(text: "Nota"),
-                    decoration:  const InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 5,
-                      value: ai,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'AI',
-                        labelText: 'AI (cmol(+) L-1)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        ai = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 5,
+                        value: ai,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'AI',
+                          labelText: 'AI (cmol(+) L-1)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          ai = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreAiController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreAiController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 8,
-                      value: ph,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'pH',
-                        labelText: 'pH',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        ph = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 8,
+                        value: ph,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'pH',
+                          labelText: 'pH',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          ph = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scorePhController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scorePhController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 2,
-                      value: rsp,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'RSP',
-                        labelText: 'RSP (MPa)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        rsp = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 2,
+                        value: rsp,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'RSP',
+                          labelText: 'RSP (MPa)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          rsp = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreRspController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreRspController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 11,
-                      value: cot,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'COT',
-                        labelText: 'COT (%)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        cot = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 11,
+                        value: cot,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'COT',
+                          labelText: 'COT (%)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          cot = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreCotController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreCotController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 120,
-                      value: cpf,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'CPF',
-                        labelText: 'CPF (cm)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        cpf = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 120,
+                        value: cpf,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'CPF',
+                          labelText: 'CPF (cm)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          cpf = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreCpfController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreCpfController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 500,
-                      value: apf,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'APF',
-                        labelText: 'APF (cm)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        apf = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 500,
+                        value: apf,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'APF',
+                          labelText: 'APF (cm)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          apf = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreApfController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreApfController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 4,
-                      max: 12,
-                      value: mpr,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'MPR',
-                        labelText: 'MPR (Manos)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        mpr = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 4,
+                        max: 12,
+                        value: mpr,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'MPR',
+                          labelText: 'MPR (Manos)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          mpr = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreMprController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreMprController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 200,
-                      value: rf,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'RF',
-                        labelText: 'RF (g planta-1)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        rf = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 200,
+                        value: rf,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'RF',
+                          labelText: 'RF (g planta-1)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          rf = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreRfController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreRfController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 700,
-                      value: cbm,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'CBM',
-                        labelText: 'CBM (ug C kg^-1 suelo^-1)',
-                      ),
-                      onChanged: (value) => setState(() {
-                        cbm = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 700,
+                        value: cbm,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'CBM',
+                          labelText: 'CBM (ug C kg^-1 suelo^-1)',
+                        ),
+                        onChanged: (value) => setState(() {
+                          cbm = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreCbmController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreCbmController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 0, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 70000,
-                      value: rsimilis,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'R.similis.',
-                        labelText: 'R.similis. (indiv 100 g-1)',
-                      ),
-                      onChanged: (value) => setState(() {
-                        rsimilis = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 0, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 70000,
+                        value: rsimilis,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'R.similis.',
+                          labelText: 'R.similis. (indiv 100 g-1)',
+                        ),
+                        onChanged: (value) => setState(() {
+                          rsimilis = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreRsimilisController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreRsimilisController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
-              child:TextField(
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                readOnly: true,
-                textAlign: TextAlign.right,
-                textAlignVertical: TextAlignVertical.top,
-                controller: overallIndexController,
-                decoration:  const InputDecoration(
-                  border: InputBorder.none,
-                  prefixText: 'Índice: ',
-                  suffixText: '%',
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
+                child:TextField(
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  readOnly: true,
+                  textAlign: TextAlign.right,
+                  textAlignVertical: TextAlignVertical.top,
+                  controller: overallIndexController,
+                  decoration:  const InputDecoration(
+                    border: InputBorder.none,
+                    prefixText: 'Índice: ',
+                    suffixText: '%',
+                  )
                 )
               )
             )
-          )
-        ],
+          ],
+        )
       ),
       actions: [
         TextButton(
@@ -1829,7 +1834,7 @@ class _AppNavigationState extends State<AppNavigation> {
           child: const Text('GUARDAR'),
         ),
       ],
-    ),
+    )
   );
 
   Future<HealthIndex?> openViewHealthIndexDialog(HealthIndex healthIndex) => showDialog<HealthIndex>(
@@ -1846,18 +1851,18 @@ class _AppNavigationState extends State<AppNavigation> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width *0.48,
                   child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          readOnly: true,
-                          textAlign: TextAlign.left,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: TextEditingController(text: "Parámetro"),
-                          decoration:  const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                          )
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      readOnly: true,
+                      textAlign: TextAlign.left,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: TextEditingController(text: "Parámetro"),
+                      decoration:  const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                       )
+                    )
                   ),
                 ),
                 SizedBox(
