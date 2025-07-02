@@ -1916,13 +1916,14 @@ class _AppNavigationState extends State<AppNavigation> {
           )
         ],
       ),
-      actionsAlignment: MainAxisAlignment.center,
+      actionsAlignment: MainAxisAlignment.end,
+      actionsPadding: EdgeInsets.only(top: 0, bottom: MediaQuery.of(context).size.height *0.02, left: 0, right: MediaQuery.of(context).size.width *0.13),
       actions: [
         TextButton(
           onPressed: () async {
             await openRecommendationsDialog(healthIndex);
           },
-          child: const Text('VER RECOMENDACIONES')
+          child: const Text('VER ADVERTENCIAS')
         ),
         TextButton(
           onPressed: () {
@@ -1977,7 +1978,7 @@ class _AppNavigationState extends State<AppNavigation> {
     context: context,
     builder: (context) => AlertDialog(
       insetPadding: const EdgeInsets.all(10),
-      title: Text('Recomendaciones para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+      title: Text('Advertencias para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
       content: Scrollbar(
         interactive: true,
         thumbVisibility: true,
