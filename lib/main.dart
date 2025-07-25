@@ -124,7 +124,7 @@ class _AppNavigationState extends State<AppNavigation> {
   static const double devPh1 = 0.31;
   static const double devPh2 = 0.32;
   static const double devAi = 0.55;
-  static const double devRsp = 0.32;
+  static const double devRsp = 0.20;
   static const double devCbm = 101.04;
   static const double devCpf = 7.59;
   static const double devApf = 60.96;
@@ -136,7 +136,7 @@ class _AppNavigationState extends State<AppNavigation> {
   static const double avgPh1 = 5.04;
   static const double avgPh2 = 5.89;
   static const double avgAi = 1.01;
-  static const double avgRsp = 0.55;
+  static const double avgRsp = 0.72;
   static const double avgCbm = 196.86;
   static const double avgCpf = 78.8;
   static const double avgApf = 195.99;
@@ -326,9 +326,9 @@ class _AppNavigationState extends State<AppNavigation> {
                       applicationLegalese: '\u{a9} ${DateTime.now().year} Jose Pablo Vargas & Olger Vargas',
                       children: [
                         const Text(''),
-                        const Text('Musalud es una aplicación de uso libre que proporciona recomendaciones para mejorar la calidad del suelo en cultivos de banano.'),
+                        const Text('Musalud calcula índices de calidad del suelo, integrando indicadores químicos, físicos y biológicos, para apoyar decisiones técnicas para el manejo del suelo en el cultivo de banano.'),
                         const Text(''),
-                        const Text("(Musalud is a free use application that provides recommendations to improve soil's health in banana plantations.)"),
+                        const Text('(Musalud calculates soil quality indices, integrating chemical, physical and biological indicators, to support technical decisions for soil management in banana plantations.)'),
                       ]
                     );
                   },
@@ -607,26 +607,86 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
+                              '% Carbono Orgánico Total (combustión seca), a una profundidad de 0-30 cm.',
                               style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
+                            )
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              'Metodología de análisis',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Combustión seca.',
+                              'pH de suelo (en agua), a una profundidad de 0-30 cm.',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Metodología usada',
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
+                            const Text(
+                              'Acidez Intercambiable (KCL 1 M), a una profundidad de 0-30 cm.',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Metodología usada',
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
+                            const Text(
+                              'Carbono de Biomasa Microbiana (fumigación-extracción [Vance et al. 1987]), a una profundidad de 0-30 cm.',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Metodología usada',
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
+                            const Text(
+                              'Resistencia del Suelo a la Penetración (penetrómetro marca Eijkelkamp® modelo 06.01SB), determinado superficialmente y a capacidad de campo.',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -637,26 +697,14 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'En agua.',
+                              'Circunferencia de Planta a Floración (en planta madre a la altura de 1 m).',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -667,26 +715,14 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'En KCl 1M.',
+                              'Altura del Hijo a Floración (altura desde la base a la "v" que se forma entre la hoja candela y la hoja #1).',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -697,26 +733,14 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Fumigación-extracción. Vance et al. (1987).',
+                              'Manos por Racimo (conteo en frutas de 11 y 12 semanas de embolse).',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -727,16 +751,16 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Superficial, humedad a capacidad de campo, utilizando un penetrómetro marca Eijkelkamp® modelo 06.01SB.',
+                              'Raíz Funcional por planta (volumen de 13x13x30 cm entre madre e hijo de sucesión [Vargas y Araya 2018]).',
                               style: TextStyle(color: Colors.white),
-                            ),
+                            )
                           ],
                         ),
                       ),
@@ -745,112 +769,16 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Planta en edad de parición. Circunferencia a 1 m de altura.',
+                              'Radopholus similis en 100 g de raíz (volumen de 13x13x30 cm entre madre e hijo de sucesión [Vargas y Araya 2018]).',
                               style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Metodología de muestreo',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Hijo de planta en edad de parición. Altura del hijo de sucesión, de la base a la "v" que se forma entre la hoja candela y hoja #1.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Metodología de muestreo',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Conteo de manos en frutas de 11 o 12 semanas de embolse.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Metodología de muestreo',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Muestra tomada en un volumen de suelo de 13x13x30 cm, entre madre e hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Metodología descrita por Vargas y Araya (2018)',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Metodología de muestreo',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Muestra tomada en un volumen de suelo de 13x13x30 cm, entre madre e hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Metodología descrita por Vargas y Araya (2018)',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            )
                           ],
                         ),
                       ),
