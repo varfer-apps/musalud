@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -123,7 +124,7 @@ class _AppNavigationState extends State<AppNavigation> {
   static const double devPh1 = 0.31;
   static const double devPh2 = 0.32;
   static const double devAi = 0.55;
-  static const double devRsp = 0.32;
+  static const double devRsp = 0.20;
   static const double devCbm = 101.04;
   static const double devCpf = 7.59;
   static const double devApf = 60.96;
@@ -135,7 +136,7 @@ class _AppNavigationState extends State<AppNavigation> {
   static const double avgPh1 = 5.04;
   static const double avgPh2 = 5.89;
   static const double avgAi = 1.01;
-  static const double avgRsp = 0.55;
+  static const double avgRsp = 0.72;
   static const double avgCbm = 196.86;
   static const double avgCpf = 78.8;
   static const double avgApf = 195.99;
@@ -274,6 +275,7 @@ class _AppNavigationState extends State<AppNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentPageIndex,
         onTap: (index) {
@@ -324,9 +326,9 @@ class _AppNavigationState extends State<AppNavigation> {
                       applicationLegalese: '\u{a9} ${DateTime.now().year} Jose Pablo Vargas & Olger Vargas',
                       children: [
                         const Text(''),
-                        const Text('Musalud es una aplicación de uso libre que proporciona recomendaciones para mejorar la calidad del suelo en cultivos de banano.'),
+                        const Text('Musalud calcula índices de calidad del suelo, integrando indicadores químicos, físicos y biológicos, para apoyar decisiones técnicas para el manejo del suelo en el cultivo de banano.'),
                         const Text(''),
-                        const Text("(Musalud is a free use application that provides recommendations to improve soil's health in banana plantations.)"),
+                        const Text('(Musalud calculates soil quality indices, integrating chemical, physical and biological indicators, to support technical decisions for soil management in banana plantations.)'),
                       ]
                     );
                   },
@@ -605,26 +607,86 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
+                              '% Carbono Orgánico Total (combustión seca), a una profundidad de 0-30 cm.',
                               style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
+                            )
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Text(
-                              'Metodología de análisis',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Combustión seca.',
+                              'pH de suelo (en agua), a una profundidad de 0-30 cm.',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Metodología usada',
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
+                            const Text(
+                              'Acidez Intercambiable (KCL 1 M), a una profundidad de 0-30 cm.',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Metodología usada',
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
+                            const Text(
+                              'Carbono de Biomasa Microbiana (fumigación-extracción [Vance et al. 1987]), a una profundidad de 0-30 cm.',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Metodología usada',
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
+                            const Text(
+                              'Resistencia del Suelo a la Penetración (penetrómetro marca Eijkelkamp® modelo 06.01SB), determinado superficialmente y a capacidad de campo.',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -635,26 +697,14 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'En agua.',
+                              'Circunferencia de Planta a Floración (en planta madre a la altura de 1 m).',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -665,26 +715,14 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'En KCl 1M.',
+                              'Altura del Hijo a Floración (altura desde la base a la "v" que se forma entre la hoja candela y la hoja #1).',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -695,26 +733,14 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Profundidad de muestra 0-30 cm frente a hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Fumigación-extracción. Vance et al. (1987).',
+                              'Manos por Racimo (conteo en frutas de 11 y 12 semanas de embolse).',
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -725,16 +751,16 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Superficial, humedad a capacidad de campo, utilizando un penetrómetro marca Eijkelkamp® modelo 06.01SB.',
+                              'Raíz Funcional por planta (volumen de 13x13x30 cm entre madre e hijo de sucesión [Vargas y Araya 2018]).',
                               style: TextStyle(color: Colors.white),
-                            ),
+                            )
                           ],
                         ),
                       ),
@@ -743,112 +769,16 @@ class _AppNavigationState extends State<AppNavigation> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Metodología de muestreo',
+                              'Metodología usada',
                               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             SizedBox(height: MediaQuery.of(context).size.width * 0.03),
                             const Text(
-                              'Planta en edad de parición. Circunferencia a 1 m de altura.',
+                              'Radopholus similis en 100 g de raíz (volumen de 13x13x30 cm entre madre e hijo de sucesión [Vargas y Araya 2018]).',
                               style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Metodología de muestreo',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Hijo de planta en edad de parición. Altura del hijo de sucesión, de la base a la "v" que se forma entre la hoja candela y hoja #1.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Metodología de muestreo',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Conteo de manos en frutas de 11 o 12 semanas de embolse.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Metodología de muestreo',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Muestra tomada en un volumen de suelo de 13x13x30 cm, entre madre e hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Metodología descrita por Vargas y Araya (2018)',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Metodología de muestreo',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Muestra tomada en un volumen de suelo de 13x13x30 cm, entre madre e hijo de sucesión.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.12),
-                            Text(
-                              'Metodología de análisis',
-                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.03),
-                            const Text(
-                              'Metodología descrita por Vargas y Araya (2018)',
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            )
                           ],
                         ),
                       ),
@@ -1264,572 +1194,582 @@ class _AppNavigationState extends State<AppNavigation> {
 
   Future<HealthIndex?> openCalculateHealthIndexDialog() => showDialog<HealthIndex>(
     context: context,
-    builder: (context) => AlertDialog(
-      insetPadding: const EdgeInsets.all(10),
-      title: Text('Cálculo de Índice de Calidad y Salud de ${locationController.text} - ${getMonth(DateTime.now().month)}, ${DateTime.now().year}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-      content: Wrap(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+    builder: (context) =>
+      AlertDialog(
+        insetPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+        title: Text('Cálculo de Índice de Calidad y Salud de ${locationController.text} - ${getMonth(DateTime.now().month)}, ${DateTime.now().year}', style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+        content: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Wrap(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 8, right: 8),
+                      child:TextField(
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        readOnly: true,
+                        textAlign: TextAlign.left,
+                        controller: TextEditingController(text: "Paramétro"),
+                        decoration:  const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
+                        )
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
                     child:TextField(
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       readOnly: true,
-                      textAlign: TextAlign.left,
-                      controller: TextEditingController(text: "Paramétro"),
+                      textAlign: TextAlign.right,
+                      controller: TextEditingController(text: "Nota"),
                       decoration:  const InputDecoration(
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
                       )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    controller: TextEditingController(text: "Nota"),
-                    decoration:  const InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.only(top: 0, bottom: 4, left: 0, right: 0),
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 5,
-                      value: ai,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'AI',
-                        labelText: 'AI (cmol(+) L-1)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        ai = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 5,
+                        value: ai,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'AI',
+                          labelText: 'AI (cmol(+) L-1)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          ai = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreAiController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreAiController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 8,
-                      value: ph,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'pH',
-                        labelText: 'pH',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        ph = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 8,
+                        value: ph,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'pH',
+                          labelText: 'pH',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          ph = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scorePhController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scorePhController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 2,
-                      value: rsp,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'RSP',
-                        labelText: 'RSP (MPa)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        rsp = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 2,
+                        value: rsp,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'RSP',
+                          labelText: 'RSP (MPa)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          rsp = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreRspController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreRspController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 11,
-                      value: cot,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'COT',
-                        labelText: 'COT (%)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        cot = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 11,
+                        value: cot,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'COT',
+                          labelText: 'COT (%)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          cot = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreCotController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreCotController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 120,
-                      value: cpf,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'CPF',
-                        labelText: 'CPF (cm)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        cpf = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 120,
+                        value: cpf,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'CPF',
+                          labelText: 'CPF (cm)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          cpf = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreCpfController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreCpfController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 500,
-                      value: apf,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'APF',
-                        labelText: 'APF (cm)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        apf = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 500,
+                        value: apf,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'APF',
+                          labelText: 'APF (cm)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          apf = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreApfController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreApfController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 4,
-                      max: 12,
-                      value: mpr,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'MPR',
-                        labelText: 'MPR (Manos)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        mpr = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 4,
+                        max: 12,
+                        value: mpr,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'MPR',
+                          labelText: 'MPR (Manos)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          mpr = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreMprController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreMprController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 200,
-                      value: rf,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'RF',
-                        labelText: 'RF (g planta-1)',
-                        labelStyle: TextStyle(color: Colors.red)
-                      ),
-                      onChanged: (value) => setState(() {
-                        rf = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 200,
+                        value: rf,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'RF',
+                          labelText: 'RF (g planta-1)',
+                          labelStyle: TextStyle(color: Colors.red)
+                        ),
+                        onChanged: (value) => setState(() {
+                          rf = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreRfController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreRfController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 700,
-                      value: cbm,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'CBM',
-                        labelText: 'CBM (ug C kg^-1 suelo^-1)',
-                      ),
-                      onChanged: (value) => setState(() {
-                        cbm = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 2, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 700,
+                        value: cbm,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'CBM',
+                          labelText: 'CBM (ug C kg^-1 suelo^-1)',
+                        ),
+                        onChanged: (value) => setState(() {
+                          cbm = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreCbmController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreCbmController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width *0.54,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4, bottom: 0, left: 8, right: 8),
-                    child: SpinBox(
-                      textStyle: const TextStyle(fontSize: 14),
-                      min: 0,
-                      max: 70000,
-                      value: rsimilis,
-                      decimals: 2,
-                      step: 0.01,
-                      acceleration: 0.01,
-                      decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
-                        hintText: 'R.similis.',
-                        labelText: 'R.similis. (indiv 100 g-1)',
-                      ),
-                      onChanged: (value) => setState(() {
-                        rsimilis = value;
-                        calculateHealthIndex();
-                      }),
-                      validator: (text) => text!.isEmpty ? 'Required' : null,
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width *0.54,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 0, left: 8, right: 8),
+                      child: SpinBox(
+                        textStyle: const TextStyle(fontSize: 14),
+                        min: 0,
+                        max: 70000,
+                        value: rsimilis,
+                        decimals: 2,
+                        step: 0.01,
+                        acceleration: 0.01,
+                        decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 5, bottom: 0, left: 0, right: 0),
+                          hintText: 'R.similis.',
+                          labelText: 'R.similis. (indiv 100 g-1)',
+                        ),
+                        onChanged: (value) => setState(() {
+                          rsimilis = value;
+                          calculateHealthIndex();
+                        }),
+                        validator: (text) => text!.isEmpty ? 'Required' : null,
+                      )
+                    ),
+                  ),
+                  Expanded(child:
+                  Padding(
+                    padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 14),
+                      readOnly: true,
+                      textAlign: TextAlign.right,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: scoreRsimilisController,
+                      decoration:  const InputDecoration(
+                        suffixText: '%',
+                      )
                     )
                   ),
-                ),
-                Expanded(child:
-                Padding(
-                  padding: EdgeInsets.only(top: 2, bottom: 2, left: MediaQuery.of(context).size.width *0.065, right: 8),
-                  child:TextField(
-                    style: const TextStyle(fontSize: 14),
-                    readOnly: true,
-                    textAlign: TextAlign.right,
-                    textAlignVertical: TextAlignVertical.bottom,
-                    controller: scoreRsimilisController,
-                    decoration:  const InputDecoration(
-                      suffixText: '%',
-                    )
                   )
-                ),
-                )
-              ],
-            )
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height *0.055,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
-              child:TextField(
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                readOnly: true,
-                textAlign: TextAlign.right,
-                textAlignVertical: TextAlignVertical.top,
-                controller: overallIndexController,
-                decoration:  const InputDecoration(
-                  border: InputBorder.none,
-                  prefixText: 'Índice: ',
-                  suffixText: '%',
+                ],
+              )
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *0.055,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 2, bottom: 0, left: 8, right: 8),
+                child:TextField(
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  readOnly: true,
+                  textAlign: TextAlign.right,
+                  textAlignVertical: TextAlignVertical.top,
+                  controller: overallIndexController,
+                  decoration:  const InputDecoration(
+                    border: InputBorder.none,
+                    prefixText: 'Índice: ',
+                    suffixText: '%',
+                  )
                 )
               )
             )
-          )
-        ],
+          ],
+        )
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('CANCELAR'),
+        SizedBox(
+          height: MediaQuery.of(context).size.height *0.055,
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('CANCELAR'),
+          )
         ),
-        TextButton(
-          onPressed: () {
-            if (scoreAiController.text.isEmpty || scoreApfController.text.isEmpty
-              || scoreCotController.text.isEmpty || scoreCpfController.text.isEmpty
-              || scoreMprController.text.isEmpty || scoreMprController.text.isEmpty
-              || scoreRfController.text.isEmpty || scoreRspController.text.isEmpty)
-            {
-              showToast("Los parámetros en rojo son obligatorios", Colors.orangeAccent, 2, ToastGravity.BOTTOM, const Icon(Icons.warning_amber, color: Colors.white,));
-              return;
-            }
-            else {
-              createHealthIndex();
-            }
-          },
-          child: const Text('GUARDAR'),
+        SizedBox(
+          height: MediaQuery.of(context).size.height *0.055,
+          child: TextButton(
+            onPressed: () {
+              if (scoreAiController.text.isEmpty || scoreApfController.text.isEmpty
+                || scoreCotController.text.isEmpty || scoreCpfController.text.isEmpty
+                || scoreMprController.text.isEmpty || scoreMprController.text.isEmpty
+                || scoreRfController.text.isEmpty || scoreRspController.text.isEmpty)
+              {
+                showToast("Los parámetros en rojo son obligatorios", Colors.orangeAccent, 2, ToastGravity.BOTTOM, const Icon(Icons.warning_amber, color: Colors.white,));
+                return;
+              }
+              else {
+                createHealthIndex();
+              }
+            },
+            child: const Text('GUARDAR'),
+          )
         ),
       ],
-    ),
+    )
   );
 
   Future<HealthIndex?> openViewHealthIndexDialog(HealthIndex healthIndex) => showDialog<HealthIndex>(
@@ -1846,18 +1786,18 @@ class _AppNavigationState extends State<AppNavigation> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width *0.48,
                   child: Padding(
-                      padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
-                      child:TextField(
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          readOnly: true,
-                          textAlign: TextAlign.left,
-                          textAlignVertical: TextAlignVertical.bottom,
-                          controller: TextEditingController(text: "Parámetro"),
-                          decoration:  const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
-                          )
+                    padding: const EdgeInsets.only(top: 0, bottom: 0, left: 14, right: 8),
+                    child:TextField(
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      readOnly: true,
+                      textAlign: TextAlign.left,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      controller: TextEditingController(text: "Parámetro"),
+                      decoration:  const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, left: 0, right: 0),
                       )
+                    )
                   ),
                 ),
                 SizedBox(
@@ -1911,13 +1851,14 @@ class _AppNavigationState extends State<AppNavigation> {
           )
         ],
       ),
-      actionsAlignment: MainAxisAlignment.center,
+      actionsAlignment: MainAxisAlignment.end,
+      actionsPadding: EdgeInsets.only(top: 0, bottom: MediaQuery.of(context).size.height *0.02, left: 0, right: MediaQuery.of(context).size.width *0.11),
       actions: [
         TextButton(
           onPressed: () async {
             await openRecommendationsDialog(healthIndex);
           },
-          child: const Text('VER RECOMENDACIONES')
+          child: const Text('VER ADVERTENCIAS')
         ),
         TextButton(
           onPressed: () {
@@ -1972,7 +1913,7 @@ class _AppNavigationState extends State<AppNavigation> {
     context: context,
     builder: (context) => AlertDialog(
       insetPadding: const EdgeInsets.all(10),
-      title: Text('Recomendaciones para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+      title: Text('Advertencias para ${locationController.text} - ${getMonth(healthIndex.month??0)}, ${healthIndex.year??0}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
       content: Scrollbar(
         interactive: true,
         thumbVisibility: true,
