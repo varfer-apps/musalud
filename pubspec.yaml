@@ -16,10 +16,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.2+3
 
 environment:
-  sdk: ^3.5.3
+  sdk: ^3.6.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -35,15 +35,17 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  flutter_map: ^7.0.2
+  flutter_map: ^8.2.2
+  flutter_map_cache: ^2.0.0
+  dio_cache_interceptor: ^4.0.6
   url_launcher: ^6.3.0
-  latlong2: ^0.9.1
+  latlong2: ^0.10.1
   flutter_localizations:
     sdk: flutter
   flutter_spinbox: ^0.13.1
-  fl_chart: ^0.69.0
+  fl_chart: ^1.2.0
   confirm_dialog: ^1.0.3
-  fluttertoast: ^8.2.8
+  fluttertoast: ^9.1.0
   normal: ^0.7.0
   path_provider: ^2.1.4
   bulleted_list: ^0.0.1+0.1a
@@ -58,7 +60,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

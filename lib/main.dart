@@ -6,6 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_cache/flutter_map_cache.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -28,6 +30,14 @@ void main()
   LicenseRegistry.addLicense(() async* {
     final flutterMapLicense = await rootBundle.loadString('assets/licenses/flutter_map_license.txt');
     yield LicenseEntryWithLineBreaks(['flutter_map'], flutterMapLicense);
+  });
+  LicenseRegistry.addLicense(() async* {
+    final flutterMapCacheLicense = await rootBundle.loadString('assets/licenses/flutter_map_cache_license.txt');
+    yield LicenseEntryWithLineBreaks(['flutter_map_cache'], flutterMapCacheLicense);
+  });
+  LicenseRegistry.addLicense(() async* {
+    final dioCacheInterceptorLicense = await rootBundle.loadString('assets/licenses/dio_cache_interceptor_license.txt');
+    yield LicenseEntryWithLineBreaks(['dio_cache_interceptor'], dioCacheInterceptorLicense);
   });
   LicenseRegistry.addLicense(() async* {
     final latlongLicense = await rootBundle.loadString('assets/licenses/latlong_license.txt');
@@ -92,7 +102,7 @@ class _SoilsMonitoringAppState extends State<SoilsMonitoringApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
-      home: AppNavigation(dataStorage: DataStorage()),
+      home: AppNavigation(dataStorage: DataStorage(), cacheStore: MemCacheStore()),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -107,9 +117,10 @@ class _SoilsMonitoringAppState extends State<SoilsMonitoringApp> {
 }
 
 class AppNavigation extends StatefulWidget {
-  const AppNavigation({super.key, required this.dataStorage});
+  const AppNavigation({super.key, required this.dataStorage, required this.cacheStore});
 
   final DataStorage dataStorage;
+  final MemCacheStore cacheStore;
 
   @override
   State<AppNavigation> createState() => _AppNavigationState();
@@ -419,6 +430,11 @@ class _AppNavigationState extends State<AppNavigation> {
                             children: [
                               TileLayer( // Display map tiles from any source
                                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
+                                userAgentPackageName: 'com.varferapps.musalud',
+                                tileProvider: CachedTileProvider(
+                                  // use the store for your CachedTileProvider instance
+                                  store: widget.cacheStore,
+                                ),
                                 maxNativeZoom: 18, // Scale tiles when the server doesn't support higher zoom levels
                               ),
                               MarkerLayer(
@@ -883,7 +899,7 @@ class _AppNavigationState extends State<AppNavigation> {
     }
 
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: SizedBox(
         width: 30,
         child: text,
@@ -1119,61 +1135,63 @@ class _AppNavigationState extends State<AppNavigation> {
     builder: (context) => AlertDialog(
       insetPadding: const EdgeInsets.all(10),
       title: const Text("Nueva Localidad"),
-      content: Column(
-        children: [
-          Form(
-            autovalidateMode: AutovalidateMode.always,
-            child: TextFormField(
-              maxLength: 35,
-              autofocus: true,
-              controller: nameController,
-              decoration: const InputDecoration(
-                hintText: "Nombre",
-                labelText: "Nombre",
-              ),
-              validator: (text) => text!.isEmpty ? 'Required' : null,
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            Form(
               autovalidateMode: AutovalidateMode.always,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SpinBox(
-              min: 8,
-              max: 11.2,
-              value: double.parse(latitude),
-              decimals: 6,
-              step: 0.000001,
-              acceleration: 0.01,
-              decoration: const InputDecoration(
-                hintText: 'Latitud',
-                labelText: 'Latitud',
+              child: TextFormField(
+                maxLength: 35,
+                autofocus: true,
+                controller: nameController,
+                decoration: const InputDecoration(
+                  hintText: "Nombre",
+                  labelText: "Nombre",
+                ),
+                validator: (text) => text!.isEmpty ? 'Required' : null,
+                autovalidateMode: AutovalidateMode.always,
               ),
-              validator: (text) => text!.isEmpty ? 'Required' : null,
-              onChanged: (latitude) {
-                latitudeController.text = latitude.toString();
-              },
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SpinBox(
-              min: -85.9,
-              max: -82.5,
-              value: double.parse(longitude),
-              decimals: 6,
-              step: 0.000001,
-              acceleration: 0.01,
-              decoration: const InputDecoration(
-                hintText: 'Longitud',
-                labelText: 'Longitud',
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SpinBox(
+                min: 8,
+                max: 11.2,
+                value: double.parse(latitude),
+                decimals: 6,
+                step: 0.000001,
+                acceleration: 0.01,
+                decoration: const InputDecoration(
+                  hintText: 'Latitud',
+                  labelText: 'Latitud',
+                ),
+                validator: (text) => text!.isEmpty ? 'Required' : null,
+                onChanged: (latitude) {
+                  latitudeController.text = latitude.toString();
+                },
               ),
-              validator: (text) => text!.isEmpty ? 'Required' : null,
-              onChanged: (longitude) {
-                longitudeController.text = longitude.toString();
-              },
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SpinBox(
+                min: -85.9,
+                max: -82.5,
+                value: double.parse(longitude),
+                decimals: 6,
+                step: 0.000001,
+                acceleration: 0.01,
+                decoration: const InputDecoration(
+                  hintText: 'Longitud',
+                  labelText: 'Longitud',
+                ),
+                validator: (text) => text!.isEmpty ? 'Required' : null,
+                onChanged: (longitude) {
+                  longitudeController.text = longitude.toString();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
