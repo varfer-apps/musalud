@@ -899,7 +899,7 @@ class _AppNavigationState extends State<AppNavigation> {
     }
 
     return SideTitleWidget(
-      axisSide: meta.axisSide,
+      meta: meta,
       child: SizedBox(
         width: 30,
         child: text,
