@@ -1135,61 +1135,63 @@ class _AppNavigationState extends State<AppNavigation> {
     builder: (context) => AlertDialog(
       insetPadding: const EdgeInsets.all(10),
       title: const Text("Nueva Localidad"),
-      content: Column(
-        children: [
-          Form(
-            autovalidateMode: AutovalidateMode.always,
-            child: TextFormField(
-              maxLength: 35,
-              autofocus: true,
-              controller: nameController,
-              decoration: const InputDecoration(
-                hintText: "Nombre",
-                labelText: "Nombre",
-              ),
-              validator: (text) => text!.isEmpty ? 'Required' : null,
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            Form(
               autovalidateMode: AutovalidateMode.always,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SpinBox(
-              min: 8,
-              max: 11.2,
-              value: double.parse(latitude),
-              decimals: 6,
-              step: 0.000001,
-              acceleration: 0.01,
-              decoration: const InputDecoration(
-                hintText: 'Latitud',
-                labelText: 'Latitud',
+              child: TextFormField(
+                maxLength: 35,
+                autofocus: true,
+                controller: nameController,
+                decoration: const InputDecoration(
+                  hintText: "Nombre",
+                  labelText: "Nombre",
+                ),
+                validator: (text) => text!.isEmpty ? 'Required' : null,
+                autovalidateMode: AutovalidateMode.always,
               ),
-              validator: (text) => text!.isEmpty ? 'Required' : null,
-              onChanged: (latitude) {
-                latitudeController.text = latitude.toString();
-              },
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SpinBox(
-              min: -85.9,
-              max: -82.5,
-              value: double.parse(longitude),
-              decimals: 6,
-              step: 0.000001,
-              acceleration: 0.01,
-              decoration: const InputDecoration(
-                hintText: 'Longitud',
-                labelText: 'Longitud',
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SpinBox(
+                min: 8,
+                max: 11.2,
+                value: double.parse(latitude),
+                decimals: 6,
+                step: 0.000001,
+                acceleration: 0.01,
+                decoration: const InputDecoration(
+                  hintText: 'Latitud',
+                  labelText: 'Latitud',
+                ),
+                validator: (text) => text!.isEmpty ? 'Required' : null,
+                onChanged: (latitude) {
+                  latitudeController.text = latitude.toString();
+                },
               ),
-              validator: (text) => text!.isEmpty ? 'Required' : null,
-              onChanged: (longitude) {
-                longitudeController.text = longitude.toString();
-              },
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SpinBox(
+                min: -85.9,
+                max: -82.5,
+                value: double.parse(longitude),
+                decimals: 6,
+                step: 0.000001,
+                acceleration: 0.01,
+                decoration: const InputDecoration(
+                  hintText: 'Longitud',
+                  labelText: 'Longitud',
+                ),
+                validator: (text) => text!.isEmpty ? 'Required' : null,
+                onChanged: (longitude) {
+                  longitudeController.text = longitude.toString();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
